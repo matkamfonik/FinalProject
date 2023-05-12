@@ -19,7 +19,10 @@ Tabela User
 Long id
 String name
 String password
-Business business -> one to one ew. one to many
+List<Business> businessess -> one to one ew. one to many
+boolean active
+LocalDateTime creationDate
+LocalDateTime modificationDate
 
 Business
 Long id
@@ -29,7 +32,7 @@ String NIP
 String REGON
 List<TaxYear> taxYears -> one to many
 List<Client> clients -> one to many ewentualnie many to many i mapper dopasowuje po nipie
-TaxationForm taxationForm -> one to one
+TaxationForm taxationForm -> many to one
 
 Address
 Long id
@@ -42,6 +45,9 @@ TaxYear
 Long id
 int year
 List <TaxMonth> taxMonths -> one to many (JoinColumn name=id_year)
+BigDecimal balance
+boolean active      - edycja nie zmienia innych pozycji (false edycja zmienia nastepne na upToDate -false)
+boolean upToDate    - poprzedni miesiac zostal zmieniony - trzeba edytowac zeby zaktualizować)
 
 Client
 Long id
@@ -50,7 +56,7 @@ Address address -> one to one
 String NIP
 String REGON
 
-TaxationForm
+TaxationForm - predefiniowane z możliwością dodawania (ewentualnia możliwość edycji ktora zmieni miesiace i lata po wproadzeniu na nieaktualne)
 Long id
 Name - skala, ryczałt, liniowy, IPBox
 double pitRate
@@ -82,6 +88,8 @@ BigDecimal income
 BigDecimal socialInsurance
 BigDecimal pitValue
 BigDecimal vatValue
+boolean active      - edycja nie zmienia innych pozycji (false edycja zmienia nastepne na upToDate -false)
+boolean upToDate    - poprzedni miesiac zostal zmieniony - trzeba edytowac zeby zaktualizować)
 
 CostPosition
 Long id
@@ -104,4 +112,4 @@ String name
 BigDecimal brutto
 double vatRate
 
-
+Osobne kontrolery responsa i osobne kontrolery requesta
