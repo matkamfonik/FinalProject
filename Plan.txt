@@ -1,8 +1,8 @@
-Ekrany:
-1. Ekran logowania
-2. Ekran tworzenia uzytkownika
+Widoki:
+1. Ekran logowania      -> widok (sping-security), kontroler
+2. Ekran rejestracji uzytkownika
 3. Ekran powitania - tworzenie firmy jezeli nie ma
-4. Ekran główny aplikacji -> tablica lat rozliczeniowych z bilansami dochodu rocznymi + dodawanie nowego
+4. Ekran główny aplikacji -> tablica lat rozliczeniowych z bilansami dochodu rocznymi + dodawanie nowego przycisk szczegółów użytkownika i firmy
 5. Ekran szczegółów lat rozliczeniowych ->  Bilans dochodu z poprzedniego roku
                                             tabela miesiecy z wartosciami (nazwa, Dochód(podstawa opodatkowania), ZUS, PIT, VAT)
 6. Ekran szczegółów miesiaca -> Tabela kosztów (Lp, Tytuł, Kwota brutto, Kwota Netto, Kwota VAT, Ujęty koszt, Ujęty VAT) (w tym ZUS i składka) (ew. dodaj skan faktury)
@@ -46,6 +46,7 @@ Long id
 int year
 List <TaxMonth> taxMonths -> one to many (JoinColumn name=id_year)
 BigDecimal balance
+BigDecimal VatBalance
 boolean active      - edycja nie zmienia innych pozycji (false edycja zmienia nastepne na upToDate -false)
 boolean upToDate    - poprzedni miesiac zostal zmieniony - trzeba edytowac zeby zaktualizować)
 
