@@ -1,42 +1,52 @@
 package pl.coderslab.finalproject.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 
 @Entity
+@Table(name = "taxation_forms")
+@Getter
+@Setter
 public class TaxationForm {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    private Long id;
 
     @NotBlank
-    String name;
+    private String name;
 
     @NotNull
-    double pitRate;
-
-    double secondPitRate;
-
-    @NotNull
-    BigDecimal taxFreeAllowance;
+    @DecimalMin(value = "1")
+    @DecimalMax(value = "100")
+    private BigDecimal pitRate;
 
     @NotNull
-    double healthCareContributionRate;
+    @DecimalMin(value = "0")
+    @DecimalMax(value = "100")
+    private BigDecimal secondPitRate;
 
     @NotNull
-    boolean healthContributionAsCost;
+    @DecimalMin(value = "0.00")
+    private BigDecimal taxFreeAllowance;
 
     @NotNull
-    BigDecimal taxThreshold;
+    @DecimalMin(value = "0")
+    @DecimalMax(value = "100")
+    private BigDecimal healthCareContributionRate;
 
     @NotNull
-    int costRate;
+    private Boolean healthContributionAsCost;
 
+    @NotNull
+    @DecimalMin(value = "0.00")
+    private BigDecimal taxThreshold;
 
+    @NotNull
+    @Min(value = 0)
+    @Max(value = 1)
+    private Integer costRate;
 }
