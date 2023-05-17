@@ -1,4 +1,4 @@
-package pl.coderslab.finalproject.services.api;
+package pl.coderslab.finalproject;
 import java.util.Collection;
 
 import lombok.Getter;
