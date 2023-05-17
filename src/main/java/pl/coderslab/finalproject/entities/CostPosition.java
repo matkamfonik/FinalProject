@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.mapping.ToOne;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -20,8 +21,9 @@ public class CostPosition {
     @NotBlank
     private String name;
 
-    @OneToOne
-    @JoinColumn(name = "id_cost_position", unique = true)
+    @ManyToOne
+    @NotNull
+    @JoinColumn(name = "cost_type_id")
     private CostType costType;
 
     @NotNull

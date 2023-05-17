@@ -24,7 +24,7 @@ public class TaxYear {
     private int year;
 
     @OneToMany
-    @JoinColumn(name = "id_year")
+    @JoinColumn(name = "id_tax_year")
     @Size(max = 12)
     private List<TaxMonth> months;
 

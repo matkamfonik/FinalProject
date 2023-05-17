@@ -5,7 +5,6 @@ import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,7 +12,7 @@ import java.util.List;
 @Table(name = "businesses")
 @Getter
 @Setter
-public class Bussiness {
+public class Business {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -22,7 +21,8 @@ public class Bussiness {
     private String name;
 
     @OneToOne
-    @JoinColumn(name = "id_bussiness", unique = true)
+    @NotNull
+    @JoinColumn(name = "address_id", unique = true)
     private Address address;
 
     @NotBlank
@@ -32,8 +32,12 @@ public class Bussiness {
     private String REGON;
 
     @OneToMany
-    @JoinColumn(name = "id_bussiness")
+    @JoinColumn(name = "id_business")
     List<TaxYear> taxYears = new ArrayList<>();
 
 
+    @ManyToOne
+    @JoinColumn
+    @NotNull
+    private TaxationForm taxationForm;
 }
