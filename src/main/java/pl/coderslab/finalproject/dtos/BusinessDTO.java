@@ -16,6 +16,8 @@ import org.springframework.format.annotation.NumberFormat;
 @Setter
 public class BusinessDTO {
 
+    private Long id;
+
     @NotBlank
     private String name;
 
@@ -42,10 +44,10 @@ public class BusinessDTO {
     @REGON
     private String regon;
 
-    @ManyToOne
-    @JoinColumn
     @NotNull
     private Long taxationForm;
+
+    private  String taxationFormName;
 
 
 }

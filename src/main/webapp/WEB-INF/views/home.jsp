@@ -11,7 +11,7 @@
 <h1>STRONA GŁÓWNA</h1>
 Witaj <a href="view/users/${user.id}">${user.username}</a> <br>
 <c:forEach items="${businesses}" var="business">
-    Firma: <a href="view/business/${business.id}">${business.name}</a><br>
+    Firma: <a href="view/businesses/${business.id}">${business.name}</a><br>
 </c:forEach>
 <a href="view/businesses">Dodaj firmę</a>
 <h3>Hello</h3>

@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import pl.coderslab.finalproject.CurrentUser;
 import pl.coderslab.finalproject.dtos.BusinessDTO;
 import pl.coderslab.finalproject.entities.Business;
-import pl.coderslab.finalproject.entities.TaxationForm;
 import pl.coderslab.finalproject.mappers.BusinessMapper;
 import pl.coderslab.finalproject.services.interfaces.BusinessService;
 import pl.coderslab.finalproject.services.interfaces.TaxationFormService;
@@ -34,13 +33,14 @@ public class BusinessViewController {
 
     @GetMapping("/{id}")
     public String show(Model model, @PathVariable(name = "id") Long id){
-        model.addAttribute("business", businessService.get(id).orElseThrow(EntityNotFoundException::new));
+
+        model.addAttribute("business", businessMapper.toDto(businessService.get(id).orElseThrow(EntityNotFoundException::new)));
         return "businesses/details";
     }
 
     @GetMapping("")
     public String add(Model model){
-        model.addAttribute("businessDto", new BusinessDTO());
+        model.addAttribute("business", new BusinessDTO());
         model.addAttribute("taxationForms", taxationFormService.getList());
         return "businesses/add-form";
     }

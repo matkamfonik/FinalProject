@@ -1,19 +1,16 @@
 package pl.coderslab.finalproject.mappers;
 
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Component;
-import pl.coderslab.finalproject.CurrentUser;
 import pl.coderslab.finalproject.dtos.BusinessDTO;
 import pl.coderslab.finalproject.entities.Business;
 import pl.coderslab.finalproject.entities.TaxationForm;
 import pl.coderslab.finalproject.entities.User;
 
-import java.util.ArrayList;
 
 @Component
 public class BusinessMapper {
 
-    public Business toEntity(BusinessDTO businessDTO, User user, TaxationForm taxationForm){
+    public Business toEntity(BusinessDTO businessDTO, User user, TaxationForm taxationForm) {
         Business business = new Business();
         business.setName(businessDTO.getName());
         business.setCity(businessDTO.getCity());
@@ -26,5 +23,21 @@ public class BusinessMapper {
         business.setUser(user);
         business.setTaxationForm(taxationForm);
         return business;
+    }
+
+    public BusinessDTO toDto(Business business) {
+        BusinessDTO businessDTO = new BusinessDTO();
+        businessDTO.setName(business.getName());
+        businessDTO.setId(business.getId());
+        businessDTO.setCity(business.getCity());
+        businessDTO.setStreet(business.getStreet());
+        businessDTO.setPostalCode(business.getPostalCode());
+        businessDTO.setNumber(business.getNumber());
+        businessDTO.setApartmentNumber(business.getApartmentNumber());
+        businessDTO.setNip(business.getNip());
+        businessDTO.setRegon(business.getRegon());
+        businessDTO.setTaxationForm(business.getTaxationForm().getId());
+        businessDTO.setTaxationFormName(business.getTaxationForm().getName());
+        return businessDTO;
     }
 }

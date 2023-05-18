@@ -15,7 +15,7 @@
 </head>
 <body>
 <h1>Nowa Firma</h1>
-<form:form method="post" modelAttribute="businessDto">
+<form:form method="post" modelAttribute="business">
 
     <label for="name">Nazwa</label><br>
     <form:input path="name"/><br>
