@@ -36,9 +36,8 @@ public class Business {
     @Pattern(regexp = "\\d+[a-zA-Z]?")
     private String number;
 
-    @NumberFormat
-    @Min(value = 0)
-    private String apartmentNumber;
+    @Min(value = 1)
+    private Integer apartmentNumber;
 
     @NIP
     private String nip;

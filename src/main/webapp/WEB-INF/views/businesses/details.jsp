@@ -13,45 +13,52 @@
 <head>
     <title>Title</title>
 </head>
-<body>
-<h1>${business.name}</h1>
-Adres:<br>
-ul.${business.street} ${business.number} <c:if
+<a>
+    <h1>${business.name}</h1>
+    Adres:<br>
+    ul.${business.street} ${business.number} <c:if
         test="${not empty business.apartmentNumber}">/${business.apartmentNumber}</c:if><br>
-${business.postalCode} ${business.city}<br>
-NIP: ${business.nip}<br>
-REGON: ${business.regon}<br>
-Forma opodatkowania: ${business.taxationFormName}<br>
+    ${business.postalCode} ${business.city}<br>
+    NIP: ${business.nip}<br>
+    REGON: ${business.regon}<br>
+    Forma opodatkowania: <a href="/view/taxation-forms/${business.taxationForm}">${business.taxationFormName}</a><br>
 
-<table>
-    <thead>
-    <tr>
-        <td>Rok podatkowy</td>
-        <td>Bilans</td>
-        <td>Bilans VAT</td>
-        <td>Aktualny</td>
-    </tr>
-    </thead>
-    <tbody>
-    <c:forEach items="${taxYears}" var="taxYear">
+    <table>
+        <thead>
         <tr>
-            <td>${taxYear.year}</td>
-            <td>${taxYear.balance}</td>
-            <td>${taxYear.vatBalance}</td>
+            <td>Rok podatkowy</td>
+            <td>Bilans</td>
+            <td>Bilans VAT</td>
+            <td>Aktualny</td>
+            <td></td>
+        </tr>
+        </thead>
+        <tbody>
+        <c:forEach items="${taxYears}" var="taxYear">
+            <tr>
+                <td>${taxYear.year}</td>
+                <td>${taxYear.balance}</td>
+                <td>${taxYear.vatBalance}</td>
+                <td>
+                    <c:choose>
+                        <c:when test="${taxYear.upToDate}">
+                            Tak
+                        </c:when>
+                        <c:otherwise>
+                            <a href="/view/businesses/${business.id}/tax-years/${taxYear.id}/patch">Nie</a>
+                        </c:otherwise>
+                    </c:choose>
+                </td>
+                <td><a href="/view/businesses/${business.id}/tax-years/${taxYear.id}">Szczegóły</a></td>
+            </tr>
+        </c:forEach>
+        <tr>
             <td>
-                <c:when test="${taxYear.upTodate==true}">Tak</c:when>
-                <c:otherwise><a
-                        href="/view/businesses/${business.id}/tax-year/${taxYear.id}/patch">Nie</a></c:otherwise>
+                <a href="/view/businesses/${business.id}/tax-years">Dodaj</a>
             </td>
         </tr>
-    </c:forEach>
-    <tr>
-        <td>
-            <a href="/view/businesses/${business.id}/taxYear">Dodaj</a>
-        </td>
-    </tr>
-    </tbody>
-</table>
-<a href="/">Wróć</a>
-</body>
+        </tbody>
+    </table>
+    <a href="/">Wróć</a>
+    </body>
 </html>
