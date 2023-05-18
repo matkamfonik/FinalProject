@@ -28,6 +28,7 @@ public class BusinessDTO {
     @Pattern(regexp = "\\d{2}-\\d{3}")
     private String postalCode;
 
+    @NotBlank
     private String Street;
 
     @NotBlank

@@ -11,7 +11,7 @@ public interface TaxYearService {
 
     List<TaxYear> findAllTaxYearByBusinessIdOrderByYearAsc(Long businessId);
 
-    Optional<TaxYear> findFirstByYearBeforeAndBusinessId(int year, Long businessId);
+    Optional<TaxYear> findByYearAndBusinessId(int year, Long businessId);
 
     Optional<TaxYear> get(Long id);
 

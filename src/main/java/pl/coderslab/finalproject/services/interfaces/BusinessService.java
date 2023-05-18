@@ -8,8 +8,6 @@ import java.util.Optional;
 
 public interface BusinessService {
 
-    List<Business> getList();
-
     List<Business> findAllBusinessNameByUserId(Long userId);
 
     Optional<Business> get(Long id);

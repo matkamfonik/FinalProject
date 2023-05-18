@@ -37,7 +37,7 @@ public class TaxYearViewController {
     public String show(Model model,@PathVariable(name = "businessId") Long businessId,  @PathVariable(name = "id") Long id){
         TaxYearDTO taxYearDTO = taxYearMapper.toDto(taxYearService.get(id).orElseThrow(EntityNotFoundException::new));
         model.addAttribute("taxYear", taxYearDTO);
-        model.addAttribute("previousYear", taxYearMapper.toDto(taxYearService.findFirstByYearBeforeAndBusinessId(taxYearDTO.getYear(), businessId).orElse(new TaxYear())));
+        model.addAttribute("previousYear", taxYearMapper.toDto(taxYearService.findByYearAndBusinessId(taxYearDTO.getYear()-1, businessId).orElse(new TaxYear())));
         return "tax-years/details";
     }
 

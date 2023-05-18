@@ -14,6 +14,9 @@ Witaj <a href="view/users/${user.id}">${user.username}</a> <br>
     Firma: <a href="view/businesses/${business.id}">${business.name}</a><br>
 </c:forEach>
 <a href="view/businesses">Dodaj firmę</a>
+<br>
+<br>
+<a href="/view/clients/all">Klienci</a>
 <h3>Hello</h3>
 </body>
 </html>

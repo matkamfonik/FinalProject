@@ -20,11 +20,6 @@ public class BusinessApiService implements BusinessService {
     private final BusinessRepository businessRepository;
 
     @Override
-    public List<Business> getList() {
-        return businessRepository.findAll();
-    }
-
-    @Override
     public List<Business> findAllBusinessNameByUserId(Long userId) {
         return businessRepository.findAllBusinessNameByUserId(userId);
     }

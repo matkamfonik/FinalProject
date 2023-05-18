@@ -6,10 +6,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.pl.NIP;
 import org.hibernate.validator.constraints.pl.REGON;
-import org.springframework.format.annotation.NumberFormat;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "businesses")
@@ -30,6 +26,8 @@ public class Business {
     @Pattern(regexp = "\\d{2}-\\d{3}")
     private String postalCode;
 
+
+    @NotBlank
     private String Street;
 
     @NotBlank
@@ -53,6 +51,5 @@ public class Business {
     @JoinColumn
     @NotNull
     private TaxationForm taxationForm;
-
 
 }

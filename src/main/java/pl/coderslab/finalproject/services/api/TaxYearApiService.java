@@ -29,8 +29,8 @@ public class TaxYearApiService implements TaxYearService {
     }
 
     @Override
-    public Optional<TaxYear> findFirstByYearBeforeAndBusinessId(int year, Long businessId) {
-        return taxYearRepository.findFirstByYearBeforeAndBusinessId(year, businessId);
+    public Optional<TaxYear> findByYearAndBusinessId(int year, Long businessId) {
+        return taxYearRepository.findByYearAndBusinessId(year, businessId);
     }
 
 

@@ -11,6 +11,6 @@ public interface TaxYearRepository extends JpaRepository <TaxYear, Long> {
 
     public List<TaxYear> findAllTaxYearNameByBusinessIdOrderByYearAsc(Long businessId);
 
-    public Optional<TaxYear> findFirstByYearBeforeAndBusinessId(int year, Long businessId);
+    public Optional<TaxYear> findByYearAndBusinessId(int year, Long businessId);
 
 }

@@ -30,17 +30,17 @@
     <tbody>
     <tr>
         <td>${taxationForm.name}</td>
-        <td>${taxationForm.pitRate*100}</td>
+        <td>${taxationForm.pitRate}</td>
         <c:choose>
             <c:when test="${taxationForm.secondPitRate >0}">
-                <td> ${taxationForm.secondPitRate*100}</td>
+                <td> ${taxationForm.secondPitRate}</td>
             </c:when>
             <c:otherwise>
                 <td>n/d</td>
             </c:otherwise>
         </c:choose>
         <td>${taxationForm.taxFreeAllowance}</td>
-        <td>${taxationForm.healthCareContributionRate*100}</td>
+        <td>${taxationForm.healthCareContributionRate}</td>
         <td>${taxationForm.healthContributionAsCost}</td>
         <c:choose>
             <c:when test="${taxationForm.taxThreshold>0}">
