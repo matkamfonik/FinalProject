@@ -4,10 +4,13 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import pl.coderslab.finalproject.entities.TaxYear;
 
 import java.util.List;
+import java.util.Optional;
 
 
 public interface TaxYearRepository extends JpaRepository <TaxYear, Long> {
 
-    public List<TaxYear> findAllTaxYearNameByBusinessId(Long businessId);
+    public List<TaxYear> findAllTaxYearNameByBusinessIdOrderByYearAsc(Long businessId);
+
+    public Optional<TaxYear> findFirstByYearBeforeAndBusinessId(int year, Long businessId);
 
 }

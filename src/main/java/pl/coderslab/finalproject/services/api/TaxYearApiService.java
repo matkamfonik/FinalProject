@@ -4,11 +4,8 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.stereotype.Service;
-import pl.coderslab.finalproject.entities.Business;
 import pl.coderslab.finalproject.entities.TaxYear;
-import pl.coderslab.finalproject.repository.BusinessRepository;
 import pl.coderslab.finalproject.repository.TaxYearRepository;
-import pl.coderslab.finalproject.services.interfaces.BusinessService;
 import pl.coderslab.finalproject.services.interfaces.TaxYearService;
 
 import java.util.List;
@@ -27,8 +24,13 @@ public class TaxYearApiService implements TaxYearService {
     }
 
     @Override
-    public List<TaxYear> findAllTaxYearByBusinessId(Long businessId) {
-        return taxYearRepository.findAllTaxYearNameByBusinessId(businessId);
+    public List<TaxYear> findAllTaxYearByBusinessIdOrderByYearAsc(Long businessId) {
+        return taxYearRepository.findAllTaxYearNameByBusinessIdOrderByYearAsc(businessId);
+    }
+
+    @Override
+    public Optional<TaxYear> findFirstByYearBeforeAndBusinessId(int year, Long businessId) {
+        return taxYearRepository.findFirstByYearBeforeAndBusinessId(year, businessId);
     }
 
 

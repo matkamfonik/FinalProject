@@ -1,6 +1,5 @@
 package pl.coderslab.finalproject.services.interfaces;
 
-import pl.coderslab.finalproject.entities.Business;
 import pl.coderslab.finalproject.entities.TaxYear;
 
 import java.util.List;
@@ -10,7 +9,9 @@ public interface TaxYearService {
 
     List<TaxYear> getList();
 
-    List<TaxYear> findAllTaxYearByBusinessId(Long businessId);
+    List<TaxYear> findAllTaxYearByBusinessIdOrderByYearAsc(Long businessId);
+
+    Optional<TaxYear> findFirstByYearBeforeAndBusinessId(int year, Long businessId);
 
     Optional<TaxYear> get(Long id);
 

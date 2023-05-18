@@ -17,10 +17,6 @@ public class TaxYearDTO {
     @Digits(integer = 4, fraction = 0)
     private int year;
 
-//    private Long business;            /todo usunąć komentarz
-//
-//    private String businessName;
-
     private BigDecimal balance = BigDecimal.ZERO;
 
     private BigDecimal vatBalance = BigDecimal.ZERO;

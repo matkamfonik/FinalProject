@@ -14,15 +14,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import pl.coderslab.finalproject.CurrentUser;
-import pl.coderslab.finalproject.dtos.BusinessDTO;
 import pl.coderslab.finalproject.dtos.TaxYearDTO;
-import pl.coderslab.finalproject.entities.Business;
 import pl.coderslab.finalproject.entities.TaxYear;
-import pl.coderslab.finalproject.mappers.BusinessMapper;
 import pl.coderslab.finalproject.mappers.TaxYearMapper;
 import pl.coderslab.finalproject.services.interfaces.BusinessService;
 import pl.coderslab.finalproject.services.interfaces.TaxYearService;
-import pl.coderslab.finalproject.services.interfaces.TaxationFormService;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -38,9 +34,10 @@ public class TaxYearViewController {
     private final BusinessService businessService;
 
     @GetMapping("/{id}")
-    public String show(Model model, @PathVariable(name = "id") Long id){
-
-        model.addAttribute("taxYear", taxYearMapper.toDto(taxYearService.get(id).orElseThrow(EntityNotFoundException::new)));
+    public String show(Model model,@PathVariable(name = "businessId") Long businessId,  @PathVariable(name = "id") Long id){
+        TaxYearDTO taxYearDTO = taxYearMapper.toDto(taxYearService.get(id).orElseThrow(EntityNotFoundException::new));
+        model.addAttribute("taxYear", taxYearDTO);
+        model.addAttribute("previousYear", taxYearMapper.toDto(taxYearService.findFirstByYearBeforeAndBusinessId(taxYearDTO.getYear(), businessId).orElse(new TaxYear())));
         return "tax-years/details";
     }
 

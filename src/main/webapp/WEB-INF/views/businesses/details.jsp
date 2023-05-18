@@ -13,7 +13,6 @@
 <head>
     <title>Title</title>
 </head>
-<a>
     <h1>${business.name}</h1>
     Adres:<br>
     ul.${business.street} ${business.number} <c:if

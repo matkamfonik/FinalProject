@@ -34,7 +34,7 @@ public class BusinessViewController {
     public String show(Model model, @PathVariable(name = "id") Long id){
 
         model.addAttribute("business", businessMapper.toDto(businessService.get(id).orElseThrow(EntityNotFoundException::new)));
-        model.addAttribute("taxYears", taxYearService.findAllTaxYearByBusinessId(id));
+        model.addAttribute("taxYears", taxYearService.findAllTaxYearByBusinessIdOrderByYearAsc(id));
         return "businesses/details";
     }
 
