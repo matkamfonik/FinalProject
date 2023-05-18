@@ -1,24 +1,20 @@
-package pl.coderslab.finalproject.entities;
+package pl.coderslab.finalproject.dtos;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.pl.NIP;
 import org.hibernate.validator.constraints.pl.REGON;
 import org.springframework.format.annotation.NumberFormat;
 
-import java.util.ArrayList;
-import java.util.List;
 
-@Entity
-@Table(name = "businesses")
 @Getter
 @Setter
-public class Business {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class BusinessDTO {
 
     @NotBlank
     private String name;
@@ -47,13 +43,9 @@ public class Business {
     private String regon;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
-
-    @ManyToOne
     @JoinColumn
     @NotNull
-    private TaxationForm taxationForm;
+    private Long taxationForm;
 
 
 }

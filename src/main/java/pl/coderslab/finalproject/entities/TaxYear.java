@@ -23,10 +23,9 @@ public class TaxYear {
     @Digits(integer = 4, fraction = 0)
     private int year;
 
-    @OneToMany
-    @JoinColumn(name = "id_tax_year")
-    @Size(max = 12)
-    private List<TaxMonth> months;
+    @ManyToOne
+    @JoinColumn(name = "business_id")
+    private Business business;
 
     private BigDecimal balance = BigDecimal.ZERO;
 

@@ -25,9 +25,9 @@ public class TaxMonth {
     @Max(12)
     private Integer number;
 
-    @OneToMany
-    @JoinColumn(name = "id_tax_month")
-    private List<CostPosition> costs = new ArrayList<>();
+    @ManyToOne
+    @JoinColumn(name = "tax_year_id")
+    private TaxYear taxYear;
 
     @OneToMany
     @JoinColumn(name = "id_tax_month")
@@ -46,8 +46,8 @@ public class TaxMonth {
     private BigDecimal vatValue = BigDecimal.ZERO;
 
     @NotNull
-    Boolean active = true;
+    private Boolean active = true;
 
     @NotNull
-    Boolean upToDate = true;
+    private Boolean upToDate = true;
 }
