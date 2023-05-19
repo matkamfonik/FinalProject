@@ -56,3 +56,5 @@ build/
 
 ### VS Code ###
 .vscode/
+/src/main/java/pl/coderslab/finalproject/httpRequests/newTest.http
+/src/main/java/pl/coderslab/finalproject/Token.java

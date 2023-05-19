@@ -15,7 +15,7 @@
 </head>
 <body>
 <h1>Nowy Klient</h1>
-<form:form method="post" modelAttribute="client">
+<form:form method="post" modelAttribute="client" action="/view/clients">
 
     <label for="name">Nazwa</label><br>
     <form:input path="name"/><br>
@@ -52,16 +52,16 @@
 
     <input type="submit" value="Dodaj">
 
-    <form:form action="/view/clients/nip" modelAttribute="nip">
-        <input type="text">
-        <input type="submit" value="Znajdź przez nr NIP">
-    </form:form>
 
-    <form:form action="/view/clients/regon" modelAttribute="nip">
-        <input type="text">
-        <input type="submit" value="Znajdź przez nr REGON">
-    </form:form>
+</form:form><br>
+<form:form action="/view/clients/nip" method="get">
+    <input type="text" name="nip">
+    <input type="submit" value="Znajdź przez nr NIP">
+</form:form>
 
+<form:form action="/view/clients/regon" method="get">
+    <input type="text" name="regon">
+    <input type="submit" value="Znajdź przez nr REGON">
 </form:form>
 </body>
 </html>

@@ -16,6 +16,7 @@ public class SecurityConfig {
         http.authorizeHttpRequests(r -> r
 //                        .requestMatchers("/").permitAll()
                         .anyRequest().authenticated())
+//                .requestMatchers("/").authenticated())
                 .formLogin();
 //                .and().logout().logoutSuccessUrl("/").permitAll();   //todo homepage with login and logout
         return http.build();

@@ -27,7 +27,7 @@
     <c:forEach var="client" items="${clients}">
         <tr>
             <td>${client.name}</td>
-            <td>ul.${client.street}
+            <td>${client.street}
                 ${client.number}
                 <c:if test="${not empty client.apartmentNumber}">
                     /${client.apartmentNumber}
