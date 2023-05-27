@@ -13,9 +13,11 @@ public interface TaxYearService {
 
     Optional<TaxYear> findByYearAndBusinessId(int year, Long businessId);
 
+    List<TaxYear> findByBusinessIdAndYearGreaterThan(Long businessId, int year);
+
     Optional<TaxYear> get(Long id);
 
-    void add(TaxYear taxYear);
+    void save(TaxYear taxYear);
 
 
 }

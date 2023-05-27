@@ -29,4 +29,8 @@ public class RevenuePosition {
     @DecimalMin("0")
     private BigDecimal vatRate;
 
+    @ManyToOne
+    @JoinColumn(name = "tax_month_id")
+    private TaxMonth taxMonth;
+
 }

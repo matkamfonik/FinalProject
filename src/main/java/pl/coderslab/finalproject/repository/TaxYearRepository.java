@@ -13,4 +13,6 @@ public interface TaxYearRepository extends JpaRepository <TaxYear, Long> {
 
     public Optional<TaxYear> findByYearAndBusinessId(int year, Long businessId);
 
+    public List<TaxYear> findByBusinessIdAndYearGreaterThan(Long businessId, int year);
+
 }

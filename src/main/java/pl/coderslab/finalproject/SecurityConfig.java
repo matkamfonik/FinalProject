@@ -14,15 +14,15 @@ public class SecurityConfig {
     @Bean
     protected SecurityFilterChain configure(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(r -> r
-//                        .requestMatchers("/").permitAll()
+                        .requestMatchers("/api").permitAll()
                         .anyRequest().authenticated())
-//                .requestMatchers("/").authenticated())
                 .formLogin();
 //                .and().logout().logoutSuccessUrl("/").permitAll();   //todo homepage with login and logout
         return http.build();
     }
+
     @Bean
-    public BCryptPasswordEncoder passwordEncoder(){
+    public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 }

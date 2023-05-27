@@ -1,4 +1,4 @@
-package pl.coderslab.finalproject.controller.viewer;
+package pl.coderslab.finalproject.controller.api;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import pl.coderslab.finalproject.CurrentUser;
 import pl.coderslab.finalproject.entities.Business;
 import pl.coderslab.finalproject.entities.User;
@@ -14,21 +15,16 @@ import pl.coderslab.finalproject.services.interfaces.BusinessService;
 
 import java.util.List;
 
-@Controller
-@RequestMapping("/view")
+@RestController
+@RequestMapping("/api")
 @Slf4j
 @RequiredArgsConstructor
-public class HomeController {
+public class ApiController {
     private final BusinessService businessService;
 
     @GetMapping("")
-    public String home(Model model, @AuthenticationPrincipal CurrentUser currentUser) {
-        User user = currentUser.getUser();
-        model.addAttribute("user", user);
-
-        List<Business> businesses = businessService.findAllBusinessNameByUserId(user.getId());
-        model.addAttribute("businesses", businesses);
-        return "home";
+    public String home() {
+        return "in progress";
     }
 
 

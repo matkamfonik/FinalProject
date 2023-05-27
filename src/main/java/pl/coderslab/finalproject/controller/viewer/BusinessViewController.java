@@ -56,6 +56,6 @@ public class BusinessViewController {
                 taxationFormService.get(businessDTO.getTaxationForm()).get());
 
         businessService.add(business);
-        return "redirect:/";
+        return "redirect:/view";
     }
 }

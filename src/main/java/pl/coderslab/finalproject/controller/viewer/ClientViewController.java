@@ -59,14 +59,16 @@ public class ClientViewController {
                 currentUser.getUser());
 
         clientService.add(client);
-        return "redirect:/";
+        return "redirect:/view";
     }
 
     @GetMapping("/nip")
     public String getByNip(Model model, @PathParam("nip") String nip){
         BlockFirmy blockFirmy = clientClient.getByNip(nip).block();
+        if (blockFirmy == null){
+            return "clients/add-form";
+        }
         Firma firma = blockFirmy.getFirma()[0];
-        log.info(firma.getNazwa());
         ClientDTO clientDTO = new ClientDTO();
         clientDTO.setName(firma.getNazwa());
         clientDTO.setCity(firma.getAdresKorespondencyjny().getMiasto());
@@ -86,7 +88,6 @@ public class ClientViewController {
             return "clients/add-form";
         }
         Firma firma = blockFirmy.getFirma()[0];
-        log.info(firma.getNazwa());
         ClientDTO clientDTO = new ClientDTO();
         clientDTO.setName(firma.getNazwa());
         clientDTO.setCity(firma.getAdresKorespondencyjny().getMiasto());

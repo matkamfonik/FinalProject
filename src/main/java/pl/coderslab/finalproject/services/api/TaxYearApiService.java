@@ -33,6 +33,11 @@ public class TaxYearApiService implements TaxYearService {
         return taxYearRepository.findByYearAndBusinessId(year, businessId);
     }
 
+    @Override
+    public List<TaxYear> findByBusinessIdAndYearGreaterThan(Long businessId, int year) {
+        return taxYearRepository.findByBusinessIdAndYearGreaterThan(businessId, year);
+    }
+
 
     @Override
     public Optional<TaxYear> get(Long id) {
@@ -40,7 +45,7 @@ public class TaxYearApiService implements TaxYearService {
     }
 
     @Override
-    public void add(TaxYear taxYear) {
+    public void save(TaxYear taxYear) {
         taxYearRepository.save(taxYear);
     }
 }

@@ -58,7 +58,7 @@
     <input type="text" name="nip">
     <input type="submit" value="Znajdź przez nr NIP">
 </form:form>
-
+<%--todo walidator--%>
 <form:form action="/view/clients/regon" method="get">
     <input type="text" name="regon">
     <input type="submit" value="Znajdź przez nr REGON">

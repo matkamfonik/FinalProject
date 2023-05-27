@@ -13,6 +13,7 @@
 <head>
     <title>Title</title>
 </head>
+<body>
 <h1>${business.name}</h1>
 Adres:<br>
 ul.${business.street} ${business.number}
@@ -59,6 +60,6 @@ Forma opodatkowania: <a href="/view/taxation-forms/${business.taxationForm}">${b
     </tr>
     </tbody>
 </table>
-<a href="/">Wróć</a>
+<a href="/view">Wróć</a>
 </body>
 </html>

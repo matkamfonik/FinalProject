@@ -9,16 +9,17 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import pl.coderslab.finalproject.CurrentUser;
 import pl.coderslab.finalproject.dtos.TaxYearDTO;
+import pl.coderslab.finalproject.entities.TaxMonth;
 import pl.coderslab.finalproject.entities.TaxYear;
 import pl.coderslab.finalproject.mappers.TaxYearMapper;
 import pl.coderslab.finalproject.services.interfaces.BusinessService;
+import pl.coderslab.finalproject.services.interfaces.TaxMonthService;
 import pl.coderslab.finalproject.services.interfaces.TaxYearService;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -33,11 +34,15 @@ public class TaxYearViewController {
 
     private final BusinessService businessService;
 
+    private final TaxMonthService taxMonthService;
+
     @GetMapping("/{id}")
     public String show(Model model,@PathVariable(name = "businessId") Long businessId,  @PathVariable(name = "id") Long id){
         TaxYearDTO taxYearDTO = taxYearMapper.toDto(taxYearService.get(id).orElseThrow(EntityNotFoundException::new));
         model.addAttribute("taxYear", taxYearDTO);
         model.addAttribute("previousYear", taxYearMapper.toDto(taxYearService.findByYearAndBusinessId(taxYearDTO.getYear()-1, businessId).orElse(new TaxYear())));
+        model.addAttribute("taxMonths", taxMonthService.findByTaxYearIdOrderByNumberDesc(id));
+        model.addAttribute("businessId", businessId);
         return "tax-years/details";
     }
 
@@ -47,7 +52,7 @@ public class TaxYearViewController {
         return "tax-years/add-form";
     }
 
-    @PostMapping("")
+    @PostMapping("")                            // todo walidacje zeby nie dodać takiego samego
     public String add(@Valid TaxYearDTO taxYearDTO,
                       BindingResult result,
                       @AuthenticationPrincipal CurrentUser currentUser,
@@ -59,7 +64,19 @@ public class TaxYearViewController {
                 currentUser.getUser(),
                 businessService.get(businessId).get());
 
-        taxYearService.add(taxYear);
+        List<TaxYear> newerYears = taxYearService.findByBusinessIdAndYearGreaterThan(businessId, taxYearDTO.getYear());
+        newerYears.forEach(t -> {
+            t.setUpToDate(false);
+            taxYearService.save(t);
+        });
+
+        taxYearService.save(taxYear);
         return "redirect:/view/businesses/"+businessId;
     }
+//    @GetMapping("/{id}/patch")          // we viewerze musi tak zostać, w api controllerze ustawie na metodę patch
+//    public String patch(){
+//
+//        return "forward:";
+//    }
+
 }
