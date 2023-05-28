@@ -21,7 +21,6 @@ public class TaxMonth {
     @NotNull
     @Min(1)
     @Max(12)
-    @Column(unique = true)
     private Integer number;
 
     @ManyToOne

@@ -10,7 +10,7 @@ import pl.coderslab.finalproject.entities.User;
 @Component
 public class TaxMonthMapper {
 
-    public TaxMonth toEntity(TaxMonthDTO taxMonthDTO, User user, TaxYear taxYear) {
+    public TaxMonth toEntity(TaxMonthDTO taxMonthDTO, TaxYear taxYear) {
         TaxMonth taxMonth = new TaxMonth();
         taxMonth.setNumber(taxMonthDTO.getNumber());
         taxMonth.setTaxYear(taxYear);

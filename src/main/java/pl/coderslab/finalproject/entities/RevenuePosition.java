@@ -23,11 +23,15 @@ public class RevenuePosition {
 
     @NotNull
     @DecimalMin("0")
-    private BigDecimal brutto;
+    private BigDecimal netto;
 
     @NotNull
     @DecimalMin("0")
     private BigDecimal vatRate;
+
+    private BigDecimal vat;
+
+    private BigDecimal brutto;
 
     @ManyToOne
     @JoinColumn(name = "tax_month_id")

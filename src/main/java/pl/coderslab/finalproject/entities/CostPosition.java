@@ -4,10 +4,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.mapping.ToOne;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 @Entity
 @Table(name = "cost_positions")
@@ -28,11 +26,19 @@ public class CostPosition {
 
     @NotNull
     @DecimalMin("0")
-    private BigDecimal brutto;
+    private BigDecimal netto;
 
     @NotNull
     @DecimalMin("0")
     private BigDecimal vatRate;
+
+    private BigDecimal vat;
+
+    private BigDecimal brutto;
+
+    private BigDecimal vatDeducted;
+
+    private BigDecimal costIncluded;
 
     @ManyToOne
     @JoinColumn(name = "tax_month_id")

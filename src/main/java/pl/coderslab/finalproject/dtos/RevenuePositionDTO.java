@@ -1,24 +1,22 @@
 package pl.coderslab.finalproject.dtos;
 
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
+
 import java.math.BigDecimal;
 
 
 @Getter
 @Setter
-public class CostPositionDTO {
+public class RevenuePositionDTO {
 
     private Long id;
 
     @NotBlank
     private String name;
-
-    @NotNull
-    private Long costTypeId;
-
-    private  String costTypeName;
 
     @NotNull
     @DecimalMin("0")
@@ -31,14 +29,5 @@ public class CostPositionDTO {
     private BigDecimal vat;
 
     private BigDecimal brutto;
-
-    private BigDecimal vatDeducted;
-
-    private BigDecimal costIncluded;
-
-
-
-
-
 
 }

@@ -14,7 +14,5 @@ public interface CostPositionService {
 
     void save(CostPosition costPosition);
 
-    List<TaxMonth> findByCostPositionIdOrderByIdDesc(Long taxMonthId);
-
-
+    public List<CostPosition> findAllByTaxMonthId(Long taxMonthId);
 }

@@ -31,15 +31,16 @@
     </tr>
     </thead>
     <tbody>
-    <c:forEach items="${taxMonths}" var="taxMonth">
+    <c:forEach items="${taxMonths}" var="taxMonth" >
         <tr>
             <td>${taxMonth.number}</td>             <%-- todo zmienić na wyświtlanie nazw miesięcy --%>
+            <td>${taxMonth.income}</td>
             <td>${taxMonth.socialInsurance}</td>
             <td>${taxMonth.pitValue}</td>
             <td>${taxMonth.vatValue}</td>
             <td>
                 <c:choose>
-                    <c:when test="${taxMonth.upToDate}">
+                    <c:when test="${taxMonth.upToDate} ">
                         Tak
                     </c:when>
                     <c:otherwise>
@@ -49,7 +50,12 @@
             </td>
             <td><a href="/view/businesses/${businessId}/tax-years/${taxYear.id}/tax-months/${taxMonth.id}">Szczegóły</a></td>
         </tr>
-        ${i=taxMonth.number}
+        <p hidden>
+            <c:choose>
+            <c:when test="${i<taxMonth.number}">
+                ${i=taxMonth.number}
+            </c:when>
+        </c:choose></p>
     </c:forEach>
     <c:if test="${i<12}">
     <tr>

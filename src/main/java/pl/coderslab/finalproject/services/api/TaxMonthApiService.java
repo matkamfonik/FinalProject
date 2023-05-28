@@ -32,8 +32,18 @@ public class TaxMonthApiService implements TaxMonthService {
     }
 
     @Override
-    public TaxMonth findByTaxYearAndNumber(TaxYear taxYear, Integer monthNumber) {
+    public Optional<TaxMonth> findByTaxYearAndNumber(TaxYear taxYear, Integer monthNumber) {
         return taxMonthRepository.findByTaxYearAndNumber(taxYear, monthNumber);
+    }
+
+    @Override
+    public List<TaxMonth> findByTaxYearIdAndNumberGreaterThan(Long taxYearId, Integer monthNumber) {
+        return taxMonthRepository.findByTaxYearIdAndNumberGreaterThan(taxYearId, monthNumber);
+    }
+
+    @Override
+    public Optional<TaxMonth> findFirstByTaxYearIdOrderByNumberDesc(Long yearId) {
+        return taxMonthRepository.findFirstByTaxYearIdOrderByNumberDesc(yearId);
     }
 
     @Override

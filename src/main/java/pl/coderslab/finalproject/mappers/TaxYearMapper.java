@@ -26,8 +26,6 @@ public class TaxYearMapper {
         TaxYearDTO taxYearDTO = new TaxYearDTO();
         taxYearDTO.setId(taxYear.getId());
         taxYearDTO.setYear(taxYear.getYear());
-//        taxYearDTO.setBusiness(taxYear.getBusiness().getId());            /todo usunąć komentarz
-//        taxYearDTO.setBusinessName(taxYear.getBusiness().getName());
         taxYearDTO.setBalance(taxYear.getBalance());
         taxYearDTO.setVatBalance(taxYear.getVatBalance());
         taxYearDTO.setUpToDate(taxYear.getUpToDate());
