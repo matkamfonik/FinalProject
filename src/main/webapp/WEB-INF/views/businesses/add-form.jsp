@@ -49,9 +49,9 @@
     <form:input path="regon"/><br>
     <form:errors path="regon" cssClass="error"/><br>
 
-    <label for="taxationForm">Forma opodatkowania</label><br>
-    <form:select itemValue="id" itemLabel="name" path="taxationForm" items="${taxationForms}"/><br>
-    <form:errors path="taxationForm" cssClass="error"/><br>
+    <label for="taxationFormId">Forma opodatkowania</label><br>
+    <form:select itemValue="id" itemLabel="name" path="taxationFormId" items="${taxationForms}"/><br>
+    <form:errors path="taxationFormId" cssClass="error"/><br>
 
 
     <input type="submit" value="Dodaj">

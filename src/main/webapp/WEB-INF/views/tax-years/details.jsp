@@ -23,9 +23,9 @@
     <tr>
         <td>Miesiąc</td>
         <td>Dochód</td>
-        <td>ZUS do zapłaty</td>
-        <td>PIT do zapłaty</td>
-        <td>VAT do zapłaty</td>
+        <td>ZUS<br> do zapłaty</td>
+        <td>PIT<br> do zapłaty</td>
+        <td>VAT<br> do zapłaty</td>
         <td>Aktualny</td>
         <td></td>
     </tr>
@@ -39,7 +39,7 @@
             <td>${taxMonth.vatValue}</td>
             <td>
                 <c:choose>
-                    <c:when test="${taxYear.upToDate}">
+                    <c:when test="${taxMonth.upToDate}">
                         Tak
                     </c:when>
                     <c:otherwise>
@@ -60,6 +60,8 @@
     </c:if>
     </tbody>
 </table>
+<p>Bilans roczny:  ${taxYear.balance}</p>
+<p>Bilans VAT:  ${taxYear.vatBalance}</p>
 <a href="/view/businesses/${businessId}">Wróć</a>
 </body>
 </html>

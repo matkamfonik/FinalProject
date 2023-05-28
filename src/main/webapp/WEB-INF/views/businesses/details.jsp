@@ -22,7 +22,7 @@ ul.${business.street} ${business.number}
 ${business.postalCode} ${business.city}<br>
 NIP: ${business.nip}<br>
 REGON: ${business.regon}<br>
-Forma opodatkowania: <a href="/view/taxation-forms/${business.taxationForm}">${business.taxationFormName}</a><br>
+Forma opodatkowania: <a href="/view/taxation-forms/${business.taxationFormId}">${business.taxationFormName}</a><br>
 
 <table>
     <thead>

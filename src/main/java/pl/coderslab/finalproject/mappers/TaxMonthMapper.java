@@ -25,6 +25,7 @@ public class TaxMonthMapper {
 
     public TaxMonthDTO toDto(TaxMonth taxMonth) {
         TaxMonthDTO taxMonthDTO = new TaxMonthDTO();
+        taxMonthDTO.setId(taxMonth.getId());
         taxMonthDTO.setNumber(taxMonth.getNumber());
         taxMonthDTO.setIncome(taxMonth.getIncome());
         taxMonthDTO.setSocialInsurance(taxMonth.getSocialInsurance());

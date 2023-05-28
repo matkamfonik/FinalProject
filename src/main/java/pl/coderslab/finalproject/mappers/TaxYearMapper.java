@@ -11,7 +11,7 @@ import pl.coderslab.finalproject.entities.User;
 @Component
 public class TaxYearMapper {
 
-    public TaxYear toEntity(TaxYearDTO taxYearDTO, User user, Business business) {
+    public TaxYear toEntity(TaxYearDTO taxYearDTO, Business business) {
         TaxYear taxYear = new TaxYear();
         taxYear.setYear(taxYearDTO.getYear());
         taxYear.setBusiness(business);
@@ -24,6 +24,7 @@ public class TaxYearMapper {
 
     public TaxYearDTO toDto(TaxYear taxYear) {
         TaxYearDTO taxYearDTO = new TaxYearDTO();
+        taxYearDTO.setId(taxYear.getId());
         taxYearDTO.setYear(taxYear.getYear());
 //        taxYearDTO.setBusiness(taxYear.getBusiness().getId());            /todo usunąć komentarz
 //        taxYearDTO.setBusinessName(taxYear.getBusiness().getName());

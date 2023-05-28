@@ -36,7 +36,7 @@ public class BusinessMapper {
         businessDTO.setApartmentNumber(business.getApartmentNumber());
         businessDTO.setNip(business.getNip());
         businessDTO.setRegon(business.getRegon());
-        businessDTO.setTaxationForm(business.getTaxationForm().getId());
+        businessDTO.setTaxationFormId(business.getTaxationForm().getId());
         businessDTO.setTaxationFormName(business.getTaxationForm().getName());
         return businessDTO;
     }

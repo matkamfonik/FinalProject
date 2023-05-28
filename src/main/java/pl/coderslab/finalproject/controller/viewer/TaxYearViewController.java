@@ -5,14 +5,11 @@ import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import pl.coderslab.finalproject.CurrentUser;
 import pl.coderslab.finalproject.dtos.TaxYearDTO;
-import pl.coderslab.finalproject.entities.TaxMonth;
 import pl.coderslab.finalproject.entities.TaxYear;
 import pl.coderslab.finalproject.mappers.TaxYearMapper;
 import pl.coderslab.finalproject.services.interfaces.BusinessService;
@@ -55,13 +52,14 @@ public class TaxYearViewController {
     @PostMapping("")                            // todo walidacje zeby nie dodać takiego samego
     public String add(@Valid TaxYearDTO taxYearDTO,
                       BindingResult result,
-                      @AuthenticationPrincipal CurrentUser currentUser,
                       @PathVariable(name = "businessId") Long businessId){
         if (result.hasErrors()){
             return "tax-years/add-form";
         }
+        TaxYearDTO previousYear = taxYearMapper.toDto(taxYearService.findByYearAndBusinessId(taxYearDTO.getYear()-1, businessId).orElse(new TaxYear()));
+        taxYearDTO.setBalance(previousYear.getBalance());
+        taxYearDTO.setVatBalance(previousYear.getVatBalance());
         TaxYear taxYear = taxYearMapper.toEntity(taxYearDTO,
-                currentUser.getUser(),
                 businessService.get(businessId).get());
 
         List<TaxYear> newerYears = taxYearService.findByBusinessIdAndYearGreaterThan(businessId, taxYearDTO.getYear());

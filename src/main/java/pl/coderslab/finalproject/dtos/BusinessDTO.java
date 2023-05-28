@@ -43,7 +43,7 @@ public class BusinessDTO {
     private String regon;
 
     @NotNull
-    private Long taxationForm;
+    private Long taxationFormId;
 
     private  String taxationFormName;
 

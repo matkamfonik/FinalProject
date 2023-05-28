@@ -53,7 +53,7 @@ public class BusinessViewController {
         }
         Business business = businessMapper.toEntity(businessDTO,
                 currentUser.getUser(),
-                taxationFormService.get(businessDTO.getTaxationForm()).get());
+                taxationFormService.get(businessDTO.getTaxationFormId()).get());
 
         businessService.add(business);
         return "redirect:/view";
