@@ -12,12 +12,12 @@ import org.springframework.web.bind.annotation.*;
 import pl.coderslab.finalproject.CurrentUser;
 import pl.coderslab.finalproject.dtos.BusinessDTO;
 import pl.coderslab.finalproject.dtos.CostPositionDTO;
-import pl.coderslab.finalproject.entities.Business;
-import pl.coderslab.finalproject.entities.CostPosition;
+import pl.coderslab.finalproject.entities.*;
 import pl.coderslab.finalproject.mappers.CostPositionMapper;
-import pl.coderslab.finalproject.services.interfaces.CostPositionService;
-import pl.coderslab.finalproject.services.interfaces.CostTypeService;
-import pl.coderslab.finalproject.services.interfaces.TaxMonthService;
+import pl.coderslab.finalproject.services.interfaces.*;
+
+import java.math.BigDecimal;
+import java.util.List;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -33,6 +33,10 @@ public class CostPositionViewController {
     private final TaxMonthService taxMonthService;
 
     private final CostPositionService costPositionService;
+
+    private final BusinessService businessService;
+
+    private final TaxYearService taxYearService;
 
     @GetMapping("")
     public String add(Model model){
@@ -53,5 +57,48 @@ public class CostPositionViewController {
 
         costPositionService.save(costPosition);
         return "redirect:/view";
+    }
+
+    @GetMapping("/health-insurance")
+    public String calculateHealthInsurance(Model model,
+                                           @PathVariable(name = "taxMonthId") Long taxMonthId,
+                                           @PathVariable(name = "businessId") Long businessId){
+        CostPositionDTO costPositionDTO = new CostPositionDTO();
+        costPositionDTO.setName("Składka zdrowotna");
+        costPositionDTO.setCostTypeId(1L);
+        costPositionDTO.setVatRate(BigDecimal.ZERO);
+        TaxMonth taxMonth = taxMonthService.get(taxMonthId).get();
+        Integer monthNumber = taxMonth.getNumber();
+        TaxYear taxYear = taxMonth.getTaxYear();
+        BigDecimal healthInsurance = BigDecimal.ZERO;
+        TaxationForm taxationForm = businessService.get(businessId).get().getTaxationForm();
+        BigDecimal healthCareContributionRate = taxationForm.getHealthCareContributionRate();
+        BigDecimal previousMonthIncome = BigDecimal.ZERO;
+        if (monthNumber > 1){
+            previousMonthIncome = taxMonthService.findByTaxYearAndNumber(taxYear, monthNumber - 1).getIncome();
+        } else {
+            TaxYear preciousTaxYear = taxYearService.findByYearAndBusinessId(taxYearService.get(taxYear.getId()).get().getYear() - 1, businessId).orElse(new TaxYear());
+            previousMonthIncome = taxMonthService.findByTaxYearAndNumber(preciousTaxYear, 12).getIncome();
+        }
+        healthInsurance = healthInsurance.add(healthCareContributionRate.divide(BigDecimal.valueOf(100L)).multiply(previousMonthIncome));
+        if (taxYear.getYear() < 2023 && healthInsurance.longValue() < 270.90){
+            costPositionDTO.setBrutto(BigDecimal.valueOf(270.9));
+        } else if (taxYear.getYear() >2023 && healthInsurance.longValue() < 314.1) {
+            costPositionDTO.setBrutto(BigDecimal.valueOf(314.1));
+        } else {
+            costPositionDTO.setBrutto(healthInsurance);
+        }
+        model.addAttribute("costPosition", costPositionDTO);
+        model.addAttribute("costTypes", costTypeService.getList());
+
+        List<TaxYear> newerYears = taxYearService.findByBusinessIdAndYearGreaterThan(businessId, taxYear.getYear());
+        newerYears.forEach(t -> {
+            t.setUpToDate(false);
+            taxYearService.save(t);
+            taxMonthService.findByTaxYearIdOrderByNumberDesc(t.getId()).forEach(m -> m.setUpToDate(false));
+        });
+
+        POWTÓRZYĆ DLA MIESIECY W DANYM ROKU
+        return "cost-positions/add-form";
     }
 }

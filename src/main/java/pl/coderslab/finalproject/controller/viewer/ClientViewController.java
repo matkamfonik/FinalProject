@@ -68,25 +68,23 @@ public class ClientViewController {
         if (blockFirmy == null){
             return "clients/add-form";
         }
-        Firma firma = blockFirmy.getFirma()[0];
-        ClientDTO clientDTO = new ClientDTO();
-        clientDTO.setName(firma.getNazwa());
-        clientDTO.setCity(firma.getAdresKorespondencyjny().getMiasto());
-        clientDTO.setPostalCode(firma.getAdresKorespondencyjny().getKod());
-        clientDTO.setStreet(firma.getAdresKorespondencyjny().getUlica());
-        clientDTO.setNumber(firma.getAdresKorespondencyjny().getBudynek());
-        clientDTO.setApartmentNumber(firma.getAdresKorespondencyjny().getLokal());
-        clientDTO.setNip(firma.getWlasciciel().getNip());
-        clientDTO.setRegon(firma.getWlasciciel().getRegon());
+        ClientDTO clientDTO = getClientDTO(blockFirmy);
         model.addAttribute("client", clientDTO);
         return "clients/add-form";
     }
+
     @GetMapping("/regon")
     public String getByRegon(Model model, @PathParam("regon") String regon){
         BlockFirmy blockFirmy = clientClient.getByRegon(regon).block();
         if (blockFirmy == null){
             return "clients/add-form";
         }
+        ClientDTO clientDTO = getClientDTO(blockFirmy);
+        model.addAttribute("client", clientDTO);
+        return "clients/add-form";
+    }
+
+    private static ClientDTO getClientDTO(BlockFirmy blockFirmy) {
         Firma firma = blockFirmy.getFirma()[0];
         ClientDTO clientDTO = new ClientDTO();
         clientDTO.setName(firma.getNazwa());
@@ -97,7 +95,6 @@ public class ClientViewController {
         clientDTO.setApartmentNumber(firma.getAdresKorespondencyjny().getLokal());
         clientDTO.setNip(firma.getWlasciciel().getNip());
         clientDTO.setRegon(firma.getWlasciciel().getRegon());
-        model.addAttribute("client", clientDTO);
-        return "clients/add-form";
+        return clientDTO;
     }
 }

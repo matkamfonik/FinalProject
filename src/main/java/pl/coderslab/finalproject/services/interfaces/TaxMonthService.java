@@ -16,5 +16,7 @@ public interface TaxMonthService {
 
     List<TaxMonth> findByTaxYearIdOrderByNumberDesc(Long yearId);
 
+    TaxMonth findByTaxYearAndNumber(TaxYear taxYear, Integer monthNumber);
+
 
 }

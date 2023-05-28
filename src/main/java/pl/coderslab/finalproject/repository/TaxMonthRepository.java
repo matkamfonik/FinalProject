@@ -12,4 +12,6 @@ public interface TaxMonthRepository extends JpaRepository <TaxMonth, Long> {
 
     public List<TaxMonth> findByTaxYearIdOrderByNumberDesc(Long yearId);
 
+    public TaxMonth findByTaxYearAndNumber(TaxYear taxYear, Integer monthNumber);
+
 }

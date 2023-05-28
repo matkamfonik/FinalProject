@@ -32,6 +32,11 @@ public class TaxMonthApiService implements TaxMonthService {
     }
 
     @Override
+    public TaxMonth findByTaxYearAndNumber(TaxYear taxYear, Integer monthNumber) {
+        return taxMonthRepository.findByTaxYearAndNumber(taxYear, monthNumber);
+    }
+
+    @Override
     public Optional<TaxMonth> get(Long id) {
         return taxMonthRepository.findById(id);
     }
@@ -40,4 +45,8 @@ public class TaxMonthApiService implements TaxMonthService {
     public void save(TaxMonth taxMonth) {
         taxMonthRepository.save(taxMonth);
     }
+
+
+
+
 }
