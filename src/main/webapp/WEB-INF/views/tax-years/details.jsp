@@ -15,9 +15,11 @@
 </head>
 <body>
 <c:set var="i" value="0"/>
+<c:set var="pitBalance" value="${-taxationForm.taxFreeAllowance*taxationForm.pitRate/100}"/>
+<c:set var="vatBalance" value="0"/>
 <h1>Rok ${taxYear.year}</h1>
-<p>Bilans za poprzedni rok:  ${previousYear.balance}</p>
-<p>Bilans VAT za poprzedni rok:  ${previousYear.vatBalance}</p>
+<p>Bilans za poprzedni rok: ${previousYear.balance}</p>
+<p>Bilans VAT za poprzedni rok: ${previousYear.vatBalance}</p>
 <table>
     <thead>
     <tr>
@@ -31,16 +33,33 @@
     </tr>
     </thead>
     <tbody>
-    <c:forEach items="${taxMonths}" var="taxMonth" >
+    <c:forEach items="${taxMonths}" var="taxMonth">
         <tr>
-            <td>${taxMonth.number}</td>             <%-- todo zmienić na wyświtlanie nazw miesięcy --%>
+            <td>${taxMonth.number}</td>
+                <%-- todo zmienić na wyświtlanie nazw miesięcy --%>
             <td>${taxMonth.income}</td>
             <td>${taxMonth.socialInsurance}</td>
-            <td>${taxMonth.pitValue}</td>
-            <td>${taxMonth.vatValue}</td>
             <td>
                 <c:choose>
-                    <c:when test="${taxMonth.upToDate} ">
+                    <c:when test="${pitBalance > 0}">
+                        <c:set var="pitBalance" value="0"/>
+                    </c:when>
+                </c:choose>
+                    ${taxMonth.pitValue + pitBalance}
+                <c:set var="pitBalance" value="${taxMonth.pitValue + pitBalance}"/>
+            </td>
+            <td>
+                <c:choose>
+                    <c:when test="${vatBalance > 0}">
+                        <c:set var="vatBalance" value="0"/>
+                    </c:when>
+                </c:choose>
+                    ${taxMonth.vatValue + vatBalance}
+                <c:set var="vatBalance" value="${taxMonth.vatValue + vatBalance}"/>
+            </td>
+            <td>
+                <c:choose>
+                    <c:when test="${taxMonth.upToDate}">
                         Tak
                     </c:when>
                     <c:otherwise>
@@ -48,26 +67,27 @@
                     </c:otherwise>
                 </c:choose>
             </td>
-            <td><a href="/view/businesses/${businessId}/tax-years/${taxYear.id}/tax-months/${taxMonth.id}">Szczegóły</a></td>
+            <td><a href="/view/businesses/${businessId}/tax-years/${taxYear.id}/tax-months/${taxMonth.id}">Szczegóły</a>
+            </td>
         </tr>
         <p hidden>
             <c:choose>
-            <c:when test="${i<taxMonth.number}">
-                ${i=taxMonth.number}
-            </c:when>
-        </c:choose></p>
+                <c:when test="${i<taxMonth.number}">
+                    ${i=taxMonth.number}
+                </c:when>
+            </c:choose></p>
     </c:forEach>
     <c:if test="${i<12}">
-    <tr>
-        <td>
-            <a href="/view/businesses/${businessId}/tax-years/${taxYear.id}/tax-months">Dodaj</a>
-        </td>
-    </tr>
+        <tr>
+            <td>
+                <a href="/view/businesses/${businessId}/tax-years/${taxYear.id}/tax-months">Dodaj</a>
+            </td>
+        </tr>
     </c:if>
     </tbody>
 </table>
-<p>Bilans roczny:  ${taxYear.balance}</p>
-<p>Bilans VAT:  ${taxYear.vatBalance}</p>
+<p>Bilans roczny: ${taxYear.balance}</p>
+<p>Bilans VAT: ${taxYear.vatBalance}</p>
 <a href="/view/businesses/${businessId}">Wróć</a>
 </body>
 </html>

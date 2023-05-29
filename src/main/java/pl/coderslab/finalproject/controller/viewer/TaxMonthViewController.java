@@ -16,6 +16,7 @@ import pl.coderslab.finalproject.dtos.TaxMonthDTO;
 import pl.coderslab.finalproject.entities.TaxMonth;
 import pl.coderslab.finalproject.entities.TaxYear;
 import pl.coderslab.finalproject.mappers.TaxMonthMapper;
+import pl.coderslab.finalproject.services.calculation.TaxMonthCalculationService;
 import pl.coderslab.finalproject.services.interfaces.*;
 
 import java.util.List;
@@ -39,11 +40,15 @@ public class TaxMonthViewController {
 
     private final BusinessService businessService;
 
+    private final TaxMonthCalculationService taxMonthCalculationService;
+
     @GetMapping("/{id}")                        //todo powinno przechodzic przez update gdzie oblicza wszytskie pozycje
     public String show(Model model,
                        @PathVariable(name = "id") Long id,
                        @PathVariable(name = "taxYearId") Long taxYearId,
                        @PathVariable(name = "businessId") Long businessId){
+        TaxMonth taxMonth = taxMonthCalculationService.calculate(id, businessId);
+        taxMonthService.save(taxMonth);
         TaxMonthDTO taxMonthDTO = taxMonthMapper.toDto(taxMonthService.get(id).orElseThrow(EntityNotFoundException::new));
         model.addAttribute("taxMonth", taxMonthDTO);
         model.addAttribute("costPositions", costPositionService.findAllByTaxMonthId(id));
@@ -51,6 +56,9 @@ public class TaxMonthViewController {
         model.addAttribute("taxYearId", taxYearId);
         model.addAttribute("businessId", businessId);
         model.addAttribute("taxationForm", businessService.get(businessId).get().getTaxationForm());
+
+
+
         return "tax-months/details";
     }
 
@@ -83,10 +91,10 @@ public class TaxMonthViewController {
                 taxYear);
 
         List<TaxYear> newerYears = taxYearService.findByBusinessIdAndYearGreaterThan(businessId, taxYear.getYear());
-        newerYears.forEach(t -> {
-            t.setUpToDate(false);
-            taxYearService.save(t);
-            taxMonthService.findByTaxYearIdOrderByNumberDesc(t.getId()).forEach(m -> {
+        newerYears.forEach(ty -> {
+            ty.setUpToDate(false);
+            taxYearService.save(ty);
+            taxMonthService.findByTaxYearIdOrderByNumberAsc(ty.getId()).forEach(m -> {
                 m.setUpToDate(false);
                 taxMonthService.save(m);
             });

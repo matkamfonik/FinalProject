@@ -30,6 +30,10 @@ public class TaxMonth {
     @NotNull
     private BigDecimal income = BigDecimal.ZERO;
 
+    private BigDecimal revenue = BigDecimal.ZERO;
+
+    private BigDecimal costs = BigDecimal.ZERO;
+
     @NotNull
     private BigDecimal socialInsurance = BigDecimal.ZERO;
 

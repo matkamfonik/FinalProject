@@ -10,11 +10,10 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import pl.coderslab.finalproject.dtos.RevenuePositionDTO;
 import pl.coderslab.finalproject.entities.*;
-import pl.coderslab.finalproject.mappers.RevenuePositionMapper;
+import pl.coderslab.finalproject.services.calculation.RevenueCalculationService;
 import pl.coderslab.finalproject.services.interfaces.*;
 
-import java.math.BigDecimal;
-import java.math.MathContext;
+import java.util.List;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -23,11 +22,13 @@ import java.math.MathContext;
 @RequestMapping("/view/businesses/{businessId}/tax-years/{taxYearId}/tax-months/{taxMonthId}/revenue-positions")
 public class RevenuePositionViewController {
 
-    private final RevenuePositionMapper revenuePositionMapper;
-
-    private final TaxMonthService taxMonthService;
+    private final RevenueCalculationService revenueCalculationService;
 
     private final RevenuePositionService revenuePositionService;
+
+    private final TaxYearService taxYearService;
+
+    private final TaxMonthService taxMonthService;
 
     @GetMapping("")
     public String add(Model model) {
@@ -45,15 +46,27 @@ public class RevenuePositionViewController {
         if (result.hasErrors()) {
             return "cost-positions/add-form";
         }
-        RevenuePosition revenuePosition = getRevenuePosition(revenuePositionDTO, taxMonthId);
+        RevenuePosition revenuePosition = revenueCalculationService.calculate(revenuePositionDTO, taxMonthId);
         revenuePositionService.save(revenuePosition);
+
+        setNextMonthsNotUpToDate(taxMonthId, businessId, taxYearId);
         return "redirect:/view/businesses/" + businessId + "/tax-years/" + taxYearId + "/tax-months/" + taxMonthId;
     }
 
-    private RevenuePosition getRevenuePosition(RevenuePositionDTO revenuePositionDTO, Long taxMonthId) {
-        RevenuePosition revenuePosition = revenuePositionMapper.toEntity(revenuePositionDTO, taxMonthService.get(taxMonthId).get());
-        revenuePosition.setVat(revenuePosition.getNetto().multiply(revenuePosition.getVatRate()).divide(BigDecimal.valueOf(100L), new MathContext(2)));
-        revenuePosition.setBrutto(revenuePosition.getNetto().add(revenuePosition.getVat()));
-        return revenuePosition;
+    private void setNextMonthsNotUpToDate(Long taxMonthId, Long businessId, Long taxYearId) {
+        List<TaxYear> newerYears = taxYearService.findByBusinessIdAndYearGreaterThan(businessId, taxYearService.get(taxYearId).get().getYear());
+        newerYears.forEach(t -> {
+            t.setUpToDate(false);
+            taxYearService.save(t);
+            taxMonthService.findByTaxYearIdOrderByNumberAsc(t.getId()).forEach(m -> {
+                m.setUpToDate(false);
+                taxMonthService.save(m);
+            });
+        });
+        List<TaxMonth> nextMonths = taxMonthService.findByTaxYearIdAndNumberGreaterThan(taxYearId, taxMonthService.get(taxMonthId).get().getNumber());
+        nextMonths.forEach(m -> {
+            m.setUpToDate(false);
+            taxMonthService.save(m);
+        });
     }
 }

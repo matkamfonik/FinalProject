@@ -66,7 +66,7 @@
     <tbody>
     <c:forEach items="${revenuePositions}" var="revenuePosition">
         <tr>
-            <td>${i = 1+i}</td>
+            <td>${j = 1+j}</td>
             <td>${revenuePosition.name}</td>
             <td>${revenuePosition.netto}</td>
             <td>${revenuePosition.vat}</td>
@@ -84,7 +84,33 @@
     </tr>
     </tbody>
 </table>
-
+<table>
+    <thead>
+    <tr>
+        <th>
+            Bilans
+        </th>
+    </tr>
+    <tr>
+        <td>Przychód</td>
+        <td>Koszty</td>
+        <td>Dochód</td>
+        <td>Skladki ZUS</td>
+        <td>VAT</td>
+        <td>PIT</td>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>${taxMonth.revenue}</td>
+        <td>${taxMonth.costs}</td>
+        <td>${taxMonth.income}</td>
+        <td>${taxMonth.socialInsurance}</td>
+        <td>${taxMonth.vatValue}</td>
+        <td>${taxMonth.pitValue}</td>
+    </tr>
+    </tbody>
+</table>
 
 <a href="/view/businesses/${businessId}/tax-years/${taxYearId}">Wróć</a>
 </body>

@@ -14,11 +14,13 @@ public interface TaxMonthService {
 
     void save(TaxMonth taxMonth);
 
-    List<TaxMonth> findByTaxYearIdOrderByNumberDesc(Long yearId);
+    List<TaxMonth> findByTaxYearIdOrderByNumberAsc(Long yearId);
 
     Optional<TaxMonth> findByTaxYearAndNumber(TaxYear taxYear, Integer monthNumber);
 
     List<TaxMonth> findByTaxYearIdAndNumberGreaterThan(Long taxYearId, Integer monthNumber);
 
     Optional<TaxMonth> findFirstByTaxYearIdOrderByNumberDesc(Long yearId);
+
+    Optional<TaxMonth> findPrevious(Long taxMonthId);
 }

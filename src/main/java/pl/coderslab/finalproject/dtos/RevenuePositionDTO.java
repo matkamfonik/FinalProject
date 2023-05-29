@@ -20,14 +20,14 @@ public class RevenuePositionDTO {
 
     @NotNull
     @DecimalMin("0")
-    private BigDecimal netto;
+    private BigDecimal netto = BigDecimal.valueOf(0L, 2);
 
     @NotNull
     @DecimalMin("0")
-    private BigDecimal vatRate;
+    private BigDecimal vatRate = BigDecimal.valueOf(0L, 2);
 
-    private BigDecimal vat;
+    private BigDecimal vat = BigDecimal.valueOf(0L, 2);
 
-    private BigDecimal brutto;
+    private BigDecimal brutto = BigDecimal.valueOf(0L, 2);
 
 }

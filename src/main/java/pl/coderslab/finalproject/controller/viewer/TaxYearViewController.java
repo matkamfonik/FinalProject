@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import pl.coderslab.finalproject.dtos.TaxYearDTO;
 import pl.coderslab.finalproject.entities.TaxYear;
 import pl.coderslab.finalproject.mappers.TaxYearMapper;
+import pl.coderslab.finalproject.services.calculation.TaxYearCalculationService;
 import pl.coderslab.finalproject.services.interfaces.BusinessService;
 import pl.coderslab.finalproject.services.interfaces.TaxMonthService;
 import pl.coderslab.finalproject.services.interfaces.TaxYearService;
@@ -33,13 +34,18 @@ public class TaxYearViewController {
 
     private final TaxMonthService taxMonthService;
 
+    private final TaxYearCalculationService taxYearCalculationService;
+
     @GetMapping("/{id}")
     public String show(Model model,@PathVariable(name = "businessId") Long businessId,  @PathVariable(name = "id") Long id){
-        TaxYearDTO taxYearDTO = taxYearMapper.toDto(taxYearService.get(id).orElseThrow(EntityNotFoundException::new));
+        TaxYear taxYear = taxYearCalculationService.calculate(id, businessId);
+        taxYearService.save(taxYear);
+        TaxYearDTO taxYearDTO = taxYearMapper.toDto(taxYear);
         model.addAttribute("taxYear", taxYearDTO);
         model.addAttribute("previousYear", taxYearMapper.toDto(taxYearService.findByYearAndBusinessId(taxYearDTO.getYear()-1, businessId).orElse(new TaxYear())));
-        model.addAttribute("taxMonths", taxMonthService.findByTaxYearIdOrderByNumberDesc(id));
+        model.addAttribute("taxMonths", taxMonthService.findByTaxYearIdOrderByNumberAsc(id));
         model.addAttribute("businessId", businessId);
+        model.addAttribute("taxationForm", businessService.get(businessId).get().getTaxationForm());
         return "tax-years/details";
     }
 

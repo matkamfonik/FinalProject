@@ -4,7 +4,6 @@ import org.springframework.stereotype.Component;
 import pl.coderslab.finalproject.dtos.TaxMonthDTO;
 import pl.coderslab.finalproject.entities.TaxMonth;
 import pl.coderslab.finalproject.entities.TaxYear;
-import pl.coderslab.finalproject.entities.User;
 
 
 @Component
@@ -15,6 +14,8 @@ public class TaxMonthMapper {
         taxMonth.setNumber(taxMonthDTO.getNumber());
         taxMonth.setTaxYear(taxYear);
         taxMonth.setIncome(taxMonthDTO.getIncome());
+        taxMonth.setRevenue(taxMonthDTO.getRevenue());
+        taxMonth.setCosts(taxMonthDTO.getCosts());
         taxMonth.setSocialInsurance(taxMonthDTO.getSocialInsurance());
         taxMonth.setPitValue(taxMonthDTO.getPitValue());
         taxMonth.setVatValue(taxMonthDTO.getVatValue());
@@ -28,6 +29,8 @@ public class TaxMonthMapper {
         taxMonthDTO.setId(taxMonth.getId());
         taxMonthDTO.setNumber(taxMonth.getNumber());
         taxMonthDTO.setIncome(taxMonth.getIncome());
+        taxMonthDTO.setRevenue(taxMonth.getRevenue());
+        taxMonthDTO.setCosts(taxMonth.getCosts());
         taxMonthDTO.setSocialInsurance(taxMonth.getSocialInsurance());
         taxMonthDTO.setPitValue(taxMonth.getPitValue());
         taxMonthDTO.setVatValue(taxMonth.getVatValue());

@@ -27,8 +27,8 @@ public class TaxMonthApiService implements TaxMonthService {
     }
 
     @Override
-    public List<TaxMonth> findByTaxYearIdOrderByNumberDesc(Long yearId) {
-        return taxMonthRepository.findByTaxYearIdOrderByNumberDesc(yearId);
+    public List<TaxMonth> findByTaxYearIdOrderByNumberAsc(Long yearId) {
+        return taxMonthRepository.findByTaxYearIdOrderByNumberAsc(yearId);
     }
 
     @Override
@@ -42,8 +42,20 @@ public class TaxMonthApiService implements TaxMonthService {
     }
 
     @Override
-    public Optional<TaxMonth> findFirstByTaxYearIdOrderByNumberDesc(Long yearId) {
-        return taxMonthRepository.findFirstByTaxYearIdOrderByNumberDesc(yearId);
+    public Optional<TaxMonth> findFirstByTaxYearIdOrderByNumberDesc(Long taxYearId) {
+        return taxMonthRepository.findFirstByTaxYearIdOrderByNumberDesc(taxYearId);
+    }
+
+    @Override
+    public Optional<TaxMonth> findPrevious(Long taxMonthId) {
+        TaxMonth taxMonth = taxMonthRepository.findById(taxMonthId).get();
+        Optional<TaxMonth> previousTaxMonth;
+        if (taxMonth.getNumber() == 1) {
+            previousTaxMonth = taxMonthRepository.findFirstByTaxYearYearAndNumber(taxMonth.getTaxYear().getYear() - 1, 12);
+        } else {
+            previousTaxMonth = taxMonthRepository.findByTaxYearAndNumber(taxMonth.getTaxYear(), taxMonth.getNumber() - 1);
+        }
+        return previousTaxMonth;
     }
 
     @Override
@@ -55,8 +67,6 @@ public class TaxMonthApiService implements TaxMonthService {
     public void save(TaxMonth taxMonth) {
         taxMonthRepository.save(taxMonth);
     }
-
-
 
 
 }

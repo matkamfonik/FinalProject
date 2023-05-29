@@ -10,11 +10,14 @@ import java.util.Optional;
 
 public interface TaxMonthRepository extends JpaRepository <TaxMonth, Long> {
 
-    public List<TaxMonth> findByTaxYearIdOrderByNumberDesc(Long yearId);
+    public List<TaxMonth> findByTaxYearIdOrderByNumberAsc(Long yearId);
 
     public Optional<TaxMonth> findByTaxYearAndNumber(TaxYear taxYear, Integer monthNumber);
 
     public List<TaxMonth> findByTaxYearIdAndNumberGreaterThan(Long taxYearId, Integer monthNumber);
 
-    public Optional<TaxMonth> findFirstByTaxYearIdOrderByNumberDesc(Long yearId);
+    public Optional<TaxMonth> findFirstByTaxYearIdOrderByNumberDesc(Long taxYearId);
+
+    public Optional<TaxMonth> findFirstByTaxYearYearAndNumber(Integer taxYearYear, Integer taxMonthNumber);
+
 }

@@ -3,6 +3,7 @@ package pl.coderslab.finalproject.dtos;
 import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.Setter;
+
 import java.math.BigDecimal;
 
 
@@ -18,7 +19,7 @@ public class CostPositionDTO {
     @NotNull
     private Long costTypeId;
 
-    private  String costTypeName;
+    private String costTypeName;
 
     @NotNull
     @DecimalMin("0")
@@ -26,19 +27,15 @@ public class CostPositionDTO {
 
     @NotNull
     @DecimalMin("0")
-    private BigDecimal vatRate;
+    private BigDecimal vatRate = BigDecimal.valueOf(0L, 2);
 
-    private BigDecimal vat;
+    private BigDecimal vat = BigDecimal.valueOf(0L, 2);
 
-    private BigDecimal brutto;
+    private BigDecimal brutto = BigDecimal.valueOf(0L, 2);
 
-    private BigDecimal vatDeducted;
+    private BigDecimal vatDeducted = BigDecimal.valueOf(0L, 2);
 
-    private BigDecimal costIncluded;
-
-
-
-
+    private BigDecimal costIncluded = BigDecimal.valueOf(0L, 2);
 
 
 }

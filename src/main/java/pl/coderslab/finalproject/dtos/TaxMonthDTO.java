@@ -1,6 +1,5 @@
 package pl.coderslab.finalproject.dtos;
 
-import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
@@ -20,13 +19,17 @@ public class TaxMonthDTO {
     @Max(value = 12)
     private Integer number;
 
-    private BigDecimal income = BigDecimal.ZERO;
+    private BigDecimal income = BigDecimal.valueOf(0L, 2);
 
-    private BigDecimal socialInsurance = BigDecimal.ZERO;
+    private BigDecimal revenue = BigDecimal.valueOf(0L, 2);
 
-    private BigDecimal pitValue = BigDecimal.ZERO;
+    private BigDecimal costs = BigDecimal.valueOf(0L, 2);
 
-    private BigDecimal vatValue = BigDecimal.ZERO;
+    private BigDecimal socialInsurance = BigDecimal.valueOf(0L, 2);
+
+    private BigDecimal pitValue = BigDecimal.valueOf(0L, 2);
+
+    private BigDecimal vatValue = BigDecimal.valueOf(0L, 2);
 
     private Boolean upToDate = true;
 }

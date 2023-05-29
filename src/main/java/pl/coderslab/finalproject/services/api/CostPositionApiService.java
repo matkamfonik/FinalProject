@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.stereotype.Service;
 import pl.coderslab.finalproject.entities.CostPosition;
-import pl.coderslab.finalproject.entities.CostType;
 import pl.coderslab.finalproject.repository.CostPositionRepository;
 import pl.coderslab.finalproject.services.interfaces.CostPositionService;
 
