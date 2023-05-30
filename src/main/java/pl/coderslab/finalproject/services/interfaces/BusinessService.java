@@ -1,5 +1,7 @@
 package pl.coderslab.finalproject.services.interfaces;
 
+import pl.coderslab.finalproject.CurrentUser;
+import pl.coderslab.finalproject.dtos.BusinessDTO;
 import pl.coderslab.finalproject.entities.Business;
 import pl.coderslab.finalproject.entities.User;
 
@@ -8,11 +10,11 @@ import java.util.Optional;
 
 public interface BusinessService {
 
-    List<Business> findAllBusinessNameByUserId(Long userId);
+    List<BusinessDTO> findAllBusinesses(CurrentUser currentUser);
 
-    Optional<Business> get(Long id);
+    BusinessDTO get(Long id);
 
-    void add(Business business);
+    void add(BusinessDTO businessDTO, CurrentUser currentUser);
 
 
 }

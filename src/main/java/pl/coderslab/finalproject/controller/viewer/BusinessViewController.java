@@ -1,6 +1,5 @@
 package pl.coderslab.finalproject.controller.viewer;
 
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -12,11 +11,12 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import pl.coderslab.finalproject.CurrentUser;
 import pl.coderslab.finalproject.dtos.BusinessDTO;
-import pl.coderslab.finalproject.entities.Business;
-import pl.coderslab.finalproject.mappers.BusinessMapper;
+import pl.coderslab.finalproject.dtos.TaxYearDTO;
 import pl.coderslab.finalproject.services.interfaces.BusinessService;
 import pl.coderslab.finalproject.services.interfaces.TaxYearService;
 import pl.coderslab.finalproject.services.interfaces.TaxationFormService;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -25,16 +25,17 @@ import pl.coderslab.finalproject.services.interfaces.TaxationFormService;
 @RequestMapping("/view/businesses")
 public class BusinessViewController {
     private final BusinessService businessService;
+
     private final TaxationFormService taxationFormService;
 
     private final TaxYearService taxYearService;
-    private final BusinessMapper businessMapper;
 
     @GetMapping("/{id}")
     public String show(Model model, @PathVariable(name = "id") Long id){
-
-        model.addAttribute("business", businessMapper.toDto(businessService.get(id).orElseThrow(EntityNotFoundException::new)));
-        model.addAttribute("taxYears", taxYearService.findAllTaxYearByBusinessIdOrderByYearAsc(id));
+        BusinessDTO businessDTO = businessService.get(id);
+        List<TaxYearDTO> taxYears = taxYearService.findAllTaxYears(id);
+        model.addAttribute("business", businessDTO);
+        model.addAttribute("taxYears", taxYears);
         return "businesses/details";
     }
 
@@ -51,11 +52,7 @@ public class BusinessViewController {
             model.addAttribute("taxationForms", taxationFormService.getList());
             return "businesses/add-form";
         }
-        Business business = businessMapper.toEntity(businessDTO,
-                currentUser.getUser(),
-                taxationFormService.get(businessDTO.getTaxationFormId()).get());
-
-        businessService.add(business);
+        businessService.add(businessDTO, currentUser);
         return "redirect:/view";
     }
 }

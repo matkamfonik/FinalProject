@@ -1,5 +1,6 @@
 package pl.coderslab.finalproject.services.interfaces;
 
+import pl.coderslab.finalproject.dtos.TaxMonthDTO;
 import pl.coderslab.finalproject.entities.TaxMonth;
 import pl.coderslab.finalproject.entities.TaxYear;
 
@@ -23,4 +24,6 @@ public interface TaxMonthService {
     Optional<TaxMonth> findFirstByTaxYearIdOrderByNumberDesc(Long yearId);
 
     Optional<TaxMonth> findPrevious(Long taxMonthId);
+
+    TaxMonthDTO update(Long taxMonthId, Long businessId);
 }

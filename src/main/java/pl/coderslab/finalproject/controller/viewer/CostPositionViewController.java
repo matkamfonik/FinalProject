@@ -9,11 +9,12 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import pl.coderslab.finalproject.dtos.CostPositionDTO;
-import pl.coderslab.finalproject.entities.*;
+import pl.coderslab.finalproject.entities.CostType;
 import pl.coderslab.finalproject.services.calculation.CostCalculationService;
 import pl.coderslab.finalproject.services.interfaces.*;
 
 import java.util.List;
+
 
 @RequiredArgsConstructor
 @Slf4j
@@ -24,11 +25,7 @@ public class CostPositionViewController {
 
     private final CostTypeService costTypeService;
 
-    private final TaxMonthService taxMonthService;
-
     private final CostPositionService costPositionService;
-
-    private final TaxYearService taxYearService;
 
     private final CostCalculationService costCalculationService;
 
@@ -37,8 +34,9 @@ public class CostPositionViewController {
                       @PathVariable(name = "businessId") Long businessId,
                       @PathVariable(name = "taxYearId") Long taxYearId,
                       @PathVariable(name = "taxMonthId") Long taxMonthId) {
+        List<CostType> costTypes = costTypeService.getList();
         model.addAttribute("costPosition", new CostPositionDTO());
-        model.addAttribute("costTypes", costTypeService.getList());
+        model.addAttribute("costTypes", costTypes);
         model.addAttribute("taxMonthId", taxMonthId);
         model.addAttribute("taxYearId", taxYearId);
         model.addAttribute("businessId", businessId);
@@ -52,36 +50,19 @@ public class CostPositionViewController {
                       @PathVariable(name = "businessId") Long businessId,
                       @PathVariable(name = "taxYearId") Long taxYearId) {
         if (result.hasErrors()) {
-            model.addAttribute("costTypes", costTypeService.getList());
+            List<CostType> costTypes = costTypeService.getList();
+            model.addAttribute("costTypes", costTypes);
             model.addAttribute("taxMonthId", taxMonthId);
             model.addAttribute("taxYearId", taxYearId);
             model.addAttribute("businessId", businessId);
             return "cost-positions/add-form";
         }
-        CostPosition costPosition = costCalculationService.calculate(costPositionDTO, taxMonthId, businessId);
-        costPositionService.save(costPosition);
-
-        setNextMonthsNotUpToDate(taxMonthId, businessId, taxYearId);
+        costPositionService.save(costPositionDTO, taxMonthId, businessId, taxYearId);
 
         return "redirect:/view/businesses/" + businessId + "/tax-years/" + taxYearId + "/tax-months/" + taxMonthId;
     }
 
-    private void setNextMonthsNotUpToDate(Long taxMonthId, Long businessId, Long taxYearId) {
-        List<TaxYear> newerYears = taxYearService.findByBusinessIdAndYearGreaterThan(businessId, taxYearService.get(taxYearId).get().getYear());
-        newerYears.forEach(t -> {
-            t.setUpToDate(false);
-            taxYearService.save(t);
-            taxMonthService.findByTaxYearIdOrderByNumberAsc(t.getId()).forEach(m -> {
-                m.setUpToDate(false);
-                taxMonthService.save(m);
-            });
-        });
-        List<TaxMonth> nextMonths = taxMonthService.findByTaxYearIdAndNumberGreaterThan(taxYearId, taxMonthService.get(taxMonthId).get().getNumber());
-        nextMonths.forEach(m -> {
-            m.setUpToDate(false);
-            taxMonthService.save(m);
-        });
-    }
+
 
     @GetMapping("/health-insurance")
     public String calculateHealthInsurance(Model model,
@@ -89,9 +70,10 @@ public class CostPositionViewController {
                                            @PathVariable(name = "businessId") Long businessId,
                                            @PathVariable(name = "taxYearId") Long taxYearId) {
         CostPositionDTO costPositionDTO = costCalculationService.calculateHealthInsurance(taxMonthId, businessId);
+        List<CostType> costTypes = costTypeService.getList();
         model.addAttribute("costPosition", costPositionDTO);
         model.addAttribute("taxYearId", taxYearId);
-        model.addAttribute("costTypes", costTypeService.getList());
+        model.addAttribute("costTypes", costTypes);
 
         return "cost-positions/add-form";
     }

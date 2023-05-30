@@ -20,6 +20,8 @@ import pl.coderslab.finalproject.httpClients.Firma;
 import pl.coderslab.finalproject.mappers.ClientMapper;
 import pl.coderslab.finalproject.services.interfaces.ClientService;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @Slf4j
 @Transactional
@@ -27,74 +29,59 @@ import pl.coderslab.finalproject.services.interfaces.ClientService;
 @RequestMapping("/view/clients")
 public class ClientViewController {
     private final ClientService clientService;
-    private final ClientMapper clientMapper;
 
     private final ClientClient clientClient;
 
     @GetMapping("/{id}")
-    public String show(Model model, @PathVariable(name = "id") Long id){
-
-        model.addAttribute("client", clientMapper.toDto(clientService.get(id).orElseThrow(EntityNotFoundException::new)));
+    public String show(Model model, @PathVariable(name = "id") Long id) {
+        ClientDTO clientDTO = clientService.get(id);
+        model.addAttribute("client", clientDTO);
         return "clients/details";
     }
 
     @GetMapping("/all")
-    public String list(Model model, @AuthenticationPrincipal CurrentUser currentUser){
-        model.addAttribute("clients", clientService.findAllClientNameByUserId(currentUser.getUser().getId()));
+    public String list(Model model, @AuthenticationPrincipal CurrentUser currentUser) {
+        List<ClientDTO> clients = clientService.findAllClients(currentUser);
+        model.addAttribute("clients", clients);
         return "clients/all";
     }
 
     @GetMapping("")
-    public String add(Model model){
+    public String add(Model model) {
         model.addAttribute("client", new ClientDTO());
         return "clients/add-form";
     }
 
     @PostMapping("")
-    public String add(@ModelAttribute(name = "client") @Valid ClientDTO clientDTO, BindingResult result, @AuthenticationPrincipal CurrentUser currentUser){
-        if (result.hasErrors()){
+    public String add(@ModelAttribute(name = "client") @Valid ClientDTO clientDTO, BindingResult result, @AuthenticationPrincipal CurrentUser currentUser) {
+        if (result.hasErrors()) {
             return "clients/add-form";
         }
-        Client client = clientMapper.toEntity(clientDTO,
-                currentUser.getUser());
-
-        clientService.add(client);
+        clientService.add(clientDTO, currentUser);
         return "redirect:/view";
     }
 
     @GetMapping("/nip")
-    public String getByNip(Model model, @PathParam("nip") String nip){
+    public String getByNip(Model model, @PathParam("nip") String nip) {
         BlockFirmy blockFirmy = clientClient.getByNip(nip).block();
-        if (blockFirmy == null){
+        if (blockFirmy == null) {
             return "clients/add-form";
         }
-        ClientDTO clientDTO = getClientDTO(blockFirmy);
+        ClientDTO clientDTO = clientService.getClientDTO(blockFirmy);
         model.addAttribute("client", clientDTO);
         return "clients/add-form";
     }
 
     @GetMapping("/regon")
-    public String getByRegon(Model model, @PathParam("regon") String regon){
+    public String getByRegon(Model model, @PathParam("regon") String regon) {
         BlockFirmy blockFirmy = clientClient.getByRegon(regon).block();
-        if (blockFirmy == null){
+        if (blockFirmy == null) {
             return "clients/add-form";
         }
-        ClientDTO clientDTO = getClientDTO(blockFirmy);
+        ClientDTO clientDTO = clientService.getClientDTO(blockFirmy);
         model.addAttribute("client", clientDTO);
         return "clients/add-form";
     }
 
-    private static ClientDTO getClientDTO(BlockFirmy blockFirmy) {
-        Firma firma = blockFirmy.getFirma()[0];
-        ClientDTO clientDTO = new ClientDTO();
-        clientDTO.setName(firma.getNazwa());
-        clientDTO.setCity(firma.getAdresKorespondencyjny().getMiasto());
-        clientDTO.setPostalCode(firma.getAdresKorespondencyjny().getKod());
-        clientDTO.setStreet(firma.getAdresKorespondencyjny().getUlica());
-        clientDTO.setNumber(firma.getAdresKorespondencyjny().getBudynek());
-        clientDTO.setApartmentNumber(firma.getAdresKorespondencyjny().getLokal());
-        clientDTO.setNip(firma.getWlasciciel().getNip());
-        clientDTO.setRegon(firma.getWlasciciel().getRegon());
-        return clientDTO;
-    }
+
 }

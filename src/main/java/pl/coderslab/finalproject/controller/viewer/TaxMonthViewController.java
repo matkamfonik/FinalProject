@@ -1,6 +1,5 @@
 package pl.coderslab.finalproject.controller.viewer;
 
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -12,11 +11,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import pl.coderslab.finalproject.dtos.CostPositionDTO;
+import pl.coderslab.finalproject.dtos.RevenuePositionDTO;
 import pl.coderslab.finalproject.dtos.TaxMonthDTO;
-import pl.coderslab.finalproject.entities.TaxMonth;
-import pl.coderslab.finalproject.entities.TaxYear;
+import pl.coderslab.finalproject.entities.*;
 import pl.coderslab.finalproject.mappers.TaxMonthMapper;
-import pl.coderslab.finalproject.services.calculation.TaxMonthCalculationService;
 import pl.coderslab.finalproject.services.interfaces.*;
 
 import java.util.List;
@@ -40,24 +39,28 @@ public class TaxMonthViewController {
 
     private final BusinessService businessService;
 
-    private final TaxMonthCalculationService taxMonthCalculationService;
+    private final TaxationFormService taxationFormService;
 
     @GetMapping("/{id}")                        //todo powinno przechodzic przez update gdzie oblicza wszytskie pozycje
     public String show(Model model,
                        @PathVariable(name = "id") Long id,
                        @PathVariable(name = "taxYearId") Long taxYearId,
                        @PathVariable(name = "businessId") Long businessId){
-        TaxMonth taxMonth = taxMonthCalculationService.calculate(id, businessId);
-        taxMonthService.save(taxMonth);
-        TaxMonthDTO taxMonthDTO = taxMonthMapper.toDto(taxMonthService.get(id).orElseThrow(EntityNotFoundException::new));
+
+        TaxMonthDTO taxMonthDTO = taxMonthService.update(id, businessId);
+
+        Long taxationFormId = businessService.get(businessId).getTaxationFormId();
+        TaxationForm taxationForm = taxationFormService.get(taxationFormId).get();
+
+        List<CostPositionDTO> costPositions = costPositionService.findAllCostPositions(id);
+        List<RevenuePositionDTO> revenuePositions = revenuePositionService.findAllRevenuePositions(id);
+
         model.addAttribute("taxMonth", taxMonthDTO);
-        model.addAttribute("costPositions", costPositionService.findAllByTaxMonthId(id));
-        model.addAttribute("revenuePositions", revenuePositionService.findAllByTaxMonthId(id));
+        model.addAttribute("costPositions", costPositions);
+        model.addAttribute("revenuePositions", revenuePositions);
         model.addAttribute("taxYearId", taxYearId);
         model.addAttribute("businessId", businessId);
-        model.addAttribute("taxationForm", businessService.get(businessId).get().getTaxationForm());
-
-
+        model.addAttribute("taxationForm", taxationForm);
 
         return "tax-months/details";
     }

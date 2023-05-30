@@ -8,7 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import pl.coderslab.finalproject.CurrentUser;
-import pl.coderslab.finalproject.entities.Business;
+import pl.coderslab.finalproject.dtos.BusinessDTO;
 import pl.coderslab.finalproject.entities.User;
 import pl.coderslab.finalproject.services.interfaces.BusinessService;
 
@@ -26,7 +26,7 @@ public class HomeController {
         User user = currentUser.getUser();
         model.addAttribute("user", user);
 
-        List<Business> businesses = businessService.findAllBusinessNameByUserId(user.getId());
+        List<BusinessDTO> businesses = businessService.findAllBusinesses(currentUser);
         model.addAttribute("businesses", businesses);
         return "home";
     }
