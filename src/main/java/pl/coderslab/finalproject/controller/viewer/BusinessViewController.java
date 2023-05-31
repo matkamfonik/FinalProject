@@ -48,6 +48,12 @@ public class BusinessViewController {
         return "businesses/add-form";
     }
 
+    @GetMapping("/{id}/delete")
+    public String delete(@PathVariable(name = "id") Long id){
+        businessService.delete(id);
+        return "redirect:/view";
+    }
+
     @PostMapping("")
     public String add(Model model,
                       @ModelAttribute(name = "business") @Valid BusinessDTO businessDTO,

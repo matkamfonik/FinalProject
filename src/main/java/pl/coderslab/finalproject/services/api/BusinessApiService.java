@@ -50,4 +50,9 @@ public class BusinessApiService implements BusinessService {
                 taxationFormService.get(businessDTO.getTaxationFormId()).get());
         businessRepository.save(business);
     }
+
+    @Override
+    public void delete(Long id){
+        businessRepository.deleteById(id);
+    }
 }

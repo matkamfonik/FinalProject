@@ -17,5 +17,7 @@ public interface BusinessService {
 
     void add(BusinessDTO businessDTO, CurrentUser currentUser);
 
+    void delete(Long id);
+
 
 }

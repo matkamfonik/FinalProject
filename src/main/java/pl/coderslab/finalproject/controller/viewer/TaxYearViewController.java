@@ -55,6 +55,13 @@ public class TaxYearViewController {
         return "tax-years/add-form";
     }
 
+    @GetMapping("/{id}/delete")
+    public String delete(@PathVariable(name = "id") Long id,
+                         @PathVariable(name = "businessId") Long businessId) {
+        taxYearService.delete(id);
+        return "redirect:/view/businesses/" + businessId;
+    }
+
     @PostMapping("")                            // todo walidacje zeby nie dodać takiego samego
     public String add(@Valid TaxYearDTO taxYearDTO,
                       BindingResult result,

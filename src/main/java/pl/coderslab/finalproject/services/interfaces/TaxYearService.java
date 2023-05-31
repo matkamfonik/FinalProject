@@ -20,6 +20,8 @@ public interface TaxYearService {
 
     void save(TaxYearDTO taxYearDTO, Long businessId);
 
+    void delete(Long id);
+
     void update(Long taxYearId, Long businessId);
 
     void patch(TaxYearDTO taxYearDTO, Long businessId);

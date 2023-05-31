@@ -67,6 +67,13 @@ public class TaxYearApiService implements TaxYearService {
     }
 
     @Override
+    public void delete(Long id){
+        TaxYear taxYear = this.get(id).get();
+        this.setNextMonthsNotUpToDate(taxYear, taxYear.getBusiness().getId());
+        taxYearRepository.deleteById(id);
+    }
+
+    @Override
     public void update(Long taxYearId, Long businessId){
         TaxYear taxYear = this.get(taxYearId).get();
         TaxYearDTO previousTaxYear = this.findByYearAndBusinessId(taxYear.getYear() - 1, taxYear.getBusiness().getId());
@@ -83,7 +90,7 @@ public class TaxYearApiService implements TaxYearService {
             this.patch(ty, businessId);
             taxMonthService.findByTaxYearIdOrderByNumberAsc(ty.getId()).forEach(tm -> {
                 tm.setUpToDate(false);
-                taxMonthService.patch(tm, taxYear);
+                taxMonthService.patch(tm, taxYearMapper.toEntity(ty,businessId));
             });
         });
     }

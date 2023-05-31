@@ -43,7 +43,12 @@ Forma opodatkowania: <a href="/view/taxation-forms/${business.taxationFormId}">$
                     </c:otherwise>
                 </c:choose>
             </td>
-            <td><a href="/view/businesses/${business.id}/tax-years/${taxYear.id}">Szczegóły</a></td>
+            <td>
+                <a href="/view/businesses/${business.id}/tax-years/${taxYear.id}">Szczegóły</a>
+            </td>
+            <td>
+                <a href="/view/businesses/${business.id}/tax-years/${taxYear.id}/delete">Usuń</a>
+            </td>
         </tr>
     </c:forEach>
     <tr>

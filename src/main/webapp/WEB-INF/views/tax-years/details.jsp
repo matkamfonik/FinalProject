@@ -7,9 +7,24 @@
     <title>Title</title>
 </head>
 <body>
+<c:choose>
+<c:when test="${previousYear.balance < 0}">
+    <c:set var="loss" value="${previousYear.balance}"/>
+</c:when>
+    <c:otherwise>
+        <c:set var="loss" value="0"/>
+    </c:otherwise>
+</c:choose>
 <c:set var="i" value="0"/>
-<c:set var="pitBalance" value="${-taxationForm.taxFreeAllowance*taxationForm.pitRate/100}"/>
-<c:set var="vatBalance" value="0"/>
+<c:set var="pitBalance" value="${(-taxationForm.taxFreeAllowance+loss)*taxationForm.pitRate/100}"/>
+<c:choose>
+<c:when test="${previousYear.vatBalance < 0}">
+    <c:set var="vatBalance" value="${previousYear.vatBalance}"/>
+</c:when>
+    <c:otherwise>
+    <c:set var="vatBalance" value="0"/>
+    </c:otherwise>
+</c:choose>
 <h1>Rok ${taxYear.year}</h1>
 <p>Bilans za poprzedni rok: ${previousYear.balance}</p>
 <p>Bilans VAT za poprzedni rok: ${previousYear.vatBalance}</p>

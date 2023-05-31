@@ -112,7 +112,7 @@ public class TaxMonthApiService implements TaxMonthService {
         this.findNextMonths(taxMonth.getTaxYear().getId(), taxMonth.getNumber(), taxMonth.getTaxYear().getYear())
                 .forEach(tm -> {
                     tm.setUpToDate(false);
-                    this.patch(taxMonthMapper.toDto(tm), taxYear);
+                    this.patch(taxMonthMapper.toDto(tm), tm.getTaxYear());
                 });
     }
 

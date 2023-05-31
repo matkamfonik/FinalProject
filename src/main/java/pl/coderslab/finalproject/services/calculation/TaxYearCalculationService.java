@@ -19,7 +19,7 @@ import java.util.List;
 public class TaxYearCalculationService {
 
 
-    public void calculate(TaxYear taxYear, TaxYearDTO previousTaxYear,List<TaxMonthDTO> months) {
+    public void calculate(TaxYear taxYear, TaxYearDTO previousTaxYear, List<TaxMonthDTO> months) {
 
         taxYear.setBalance(BigDecimal.valueOf(0L, 2));
         taxYear.setVatBalance(previousTaxYear.getVatBalance());
@@ -31,6 +31,8 @@ public class TaxYearCalculationService {
             }
             taxYear.setVatBalance(taxYear.getVatBalance().add(tm.getVatValue(), new MathContext(5)));
         });
-
+        if (previousTaxYear.getUpToDate()) {
+            taxYear.setUpToDate(true);
+        }
     }
 }

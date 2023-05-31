@@ -80,7 +80,7 @@ public class TaxMonthViewController {
 
         taxMonthService.delete(id);
 
-//        taxYearService.update(taxYearId, businessId);
+        taxYearService.update(taxYearId, businessId);
 
         return "redirect:/view/businesses/"+businessId+"/tax-years/"+taxYearId;
     }
