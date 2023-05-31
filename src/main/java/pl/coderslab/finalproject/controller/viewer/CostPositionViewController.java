@@ -10,9 +10,12 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import pl.coderslab.finalproject.dtos.CostPositionDTO;
 import pl.coderslab.finalproject.entities.CostType;
+import pl.coderslab.finalproject.entities.TaxMonth;
+import pl.coderslab.finalproject.entities.TaxYear;
 import pl.coderslab.finalproject.services.calculation.CostCalculationService;
 import pl.coderslab.finalproject.services.interfaces.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 
@@ -28,6 +31,10 @@ public class CostPositionViewController {
     private final CostPositionService costPositionService;
 
     private final CostCalculationService costCalculationService;
+
+    private final TaxMonthService taxMonthService;
+
+    private final TaxYearService taxYearService;
 
     @GetMapping("")
     public String add(Model model,
@@ -57,7 +64,13 @@ public class CostPositionViewController {
             model.addAttribute("businessId", businessId);
             return "cost-positions/add-form";
         }
-        costPositionService.save(costPositionDTO, taxMonthId, businessId, taxYearId);
+        TaxMonth taxMonth = taxMonthService.get(taxMonthId).get();
+        costPositionService.add(costPositionDTO, taxMonth, businessId, taxYearId);
+        TaxYear taxYear = taxYearService.get(taxYearId).get();                      //todo przenieść do posta w ApiControllerze
+        taxMonthService.setNextMonthsNotUpToDate(taxMonthId, taxYear);              //todo przenieść do posta w ApiControllerze
+        taxMonthService.update(taxMonthId, businessId);                             //todo przenieść do posta w ApiControllerze
+        taxYearService.update(taxYearId, businessId);                               //todo przenieść do posta w ApiControllerze
+
 
         return "redirect:/view/businesses/" + businessId + "/tax-years/" + taxYearId + "/tax-months/" + taxMonthId;
     }
@@ -69,7 +82,9 @@ public class CostPositionViewController {
                                            @PathVariable(name = "taxMonthId") Long taxMonthId,
                                            @PathVariable(name = "businessId") Long businessId,
                                            @PathVariable(name = "taxYearId") Long taxYearId) {
-        CostPositionDTO costPositionDTO = costCalculationService.calculateHealthInsurance(taxMonthId, businessId);
+        TaxMonth previousTaxMonth = taxMonthService.findPrevious(taxMonthId).orElse(new TaxMonth());
+        int taxYearYear = taxYearService.get(taxYearId).get().getYear();
+        CostPositionDTO costPositionDTO = costCalculationService.calculateHealthInsurance(businessId, taxYearYear, previousTaxMonth);
         List<CostType> costTypes = costTypeService.getList();
         model.addAttribute("costPosition", costPositionDTO);
         model.addAttribute("taxYearId", taxYearId);

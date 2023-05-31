@@ -15,7 +15,6 @@ import pl.coderslab.finalproject.repository.ClientRepository;
 import pl.coderslab.finalproject.services.interfaces.ClientService;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,7 +33,7 @@ public class ClientApiService implements ClientService {
     }
 
     @Override
-    public ClientDTO get(Long id) {
+    public ClientDTO getDTO(Long id) {
         Client client = clientRepository.findById(id).orElseThrow(EntityNotFoundException::new);
         return clientMapper.toDto(client);
     }
@@ -46,7 +45,7 @@ public class ClientApiService implements ClientService {
         clientRepository.save(client);
     }
 
-    public ClientDTO getClientDTO(BlockFirmy blockFirmy) {
+    public ClientDTO extractClientDTO(BlockFirmy blockFirmy) {
         Firma firma = blockFirmy.getFirma()[0];
         ClientDTO clientDTO = new ClientDTO();
         clientDTO.setName(firma.getNazwa());

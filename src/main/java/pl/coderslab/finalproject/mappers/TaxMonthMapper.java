@@ -1,5 +1,6 @@
 package pl.coderslab.finalproject.mappers;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import pl.coderslab.finalproject.dtos.TaxMonthDTO;
 import pl.coderslab.finalproject.entities.TaxMonth;
@@ -7,6 +8,7 @@ import pl.coderslab.finalproject.entities.TaxYear;
 
 
 @Component
+@RequiredArgsConstructor
 public class TaxMonthMapper {
 
     public TaxMonth toEntity(TaxMonthDTO taxMonthDTO, TaxYear taxYear) {

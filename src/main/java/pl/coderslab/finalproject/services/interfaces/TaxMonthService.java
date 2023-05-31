@@ -1,5 +1,6 @@
 package pl.coderslab.finalproject.services.interfaces;
 
+import org.springframework.data.repository.query.Param;
 import pl.coderslab.finalproject.dtos.TaxMonthDTO;
 import pl.coderslab.finalproject.entities.TaxMonth;
 import pl.coderslab.finalproject.entities.TaxYear;
@@ -9,21 +10,25 @@ import java.util.Optional;
 
 public interface TaxMonthService {
 
-    List<TaxMonth> getList();
+    TaxMonthDTO getDTO(Long taxMonthId);
 
-    Optional<TaxMonth> get(Long id);
+    Optional<TaxMonth> get(Long taxMonthId);
 
-    void save(TaxMonth taxMonth);
+    void add(TaxMonthDTO taxMonthDTO, TaxYear taxYear);
 
-    List<TaxMonth> findByTaxYearIdOrderByNumberAsc(Long yearId);
+    List<TaxMonthDTO> findByTaxYearIdOrderByNumberAsc(Long yearId);
 
-    Optional<TaxMonth> findByTaxYearAndNumber(TaxYear taxYear, Integer monthNumber);
+    List<TaxMonthDTO> findByTaxYearIdAndNumberGreaterThan(Long taxYearId, Integer monthNumber);
 
-    List<TaxMonth> findByTaxYearIdAndNumberGreaterThan(Long taxYearId, Integer monthNumber);
-
-    Optional<TaxMonth> findFirstByTaxYearIdOrderByNumberDesc(Long yearId);
+    TaxMonthDTO findFirstByTaxYearIdOrderByNumberDesc(Long yearId);
 
     Optional<TaxMonth> findPrevious(Long taxMonthId);
 
-    TaxMonthDTO update(Long taxMonthId, Long businessId);
+    void update(Long taxMonthId, Long businessId);
+
+    void patch(TaxMonthDTO taxMonthDTO, TaxYear taxYear);
+
+    List<TaxMonth> findNextMonths (Long yearId, Integer taxMonthNumber, Integer taxYearYear);
+
+    void setNextMonthsNotUpToDate(Long taxMonthId, TaxYear taxYear); //todo wyrzucić stąd po zrobieniu TaxMonthApiControllera
 }

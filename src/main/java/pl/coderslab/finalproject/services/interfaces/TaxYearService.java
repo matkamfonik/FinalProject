@@ -10,13 +10,17 @@ public interface TaxYearService {
 
     List<TaxYearDTO> findAllTaxYears(Long businessId);
 
-    Optional<TaxYear> findByYearAndBusinessId(int year, Long businessId);
+    TaxYearDTO findByYearAndBusinessId(int year, Long businessId);
 
-    List<TaxYear> findByBusinessIdAndYearGreaterThan(Long businessId, int year);
+    List<TaxYearDTO> findByBusinessIdAndYearGreaterThan(Long businessId, int year);
+
+    TaxYearDTO getDTO(Long id);
 
     Optional<TaxYear> get(Long id);
 
-    void save(TaxYear taxYear);
+    void save(TaxYearDTO taxYearDTO, Long businessId);
 
+    void update(Long taxYearId, Long businessId);
 
+    void patch(TaxYearDTO taxYearDTO, Long businessId);
 }

@@ -15,7 +15,6 @@ import pl.coderslab.finalproject.dtos.CostPositionDTO;
 import pl.coderslab.finalproject.dtos.RevenuePositionDTO;
 import pl.coderslab.finalproject.dtos.TaxMonthDTO;
 import pl.coderslab.finalproject.entities.*;
-import pl.coderslab.finalproject.mappers.TaxMonthMapper;
 import pl.coderslab.finalproject.services.interfaces.*;
 
 import java.util.List;
@@ -27,10 +26,6 @@ import java.util.List;
 @RequestMapping("/view/businesses/{businessId}/tax-years/{taxYearId}/tax-months")
 public class TaxMonthViewController {
 
-    private final TaxYearService taxYearService;
-
-    private final TaxMonthMapper taxMonthMapper;
-
     private final TaxMonthService taxMonthService;
 
     private final CostPositionService costPositionService;
@@ -39,18 +34,17 @@ public class TaxMonthViewController {
 
     private final BusinessService businessService;
 
-    private final TaxationFormService taxationFormService;
+    private final TaxYearService taxYearService;
 
-    @GetMapping("/{id}")                        //todo powinno przechodzic przez update gdzie oblicza wszytskie pozycje
+    @GetMapping("/{id}")
     public String show(Model model,
                        @PathVariable(name = "id") Long id,
                        @PathVariable(name = "taxYearId") Long taxYearId,
                        @PathVariable(name = "businessId") Long businessId){
 
-        TaxMonthDTO taxMonthDTO = taxMonthService.update(id, businessId);
+        TaxMonthDTO taxMonthDTO = taxMonthService.getDTO(id);
 
-        Long taxationFormId = businessService.get(businessId).getTaxationFormId();
-        TaxationForm taxationForm = taxationFormService.get(taxationFormId).get();
+        TaxationForm taxationForm = businessService.get(businessId).get().getTaxationForm();
 
         List<CostPositionDTO> costPositions = costPositionService.findAllCostPositions(id);
         List<RevenuePositionDTO> revenuePositions = revenuePositionService.findAllRevenuePositions(id);
@@ -69,9 +63,7 @@ public class TaxMonthViewController {
     public String add(Model model,
                       @PathVariable(name = "taxYearId") Long taxYearId,
                       @PathVariable(name = "businessId") Long businessId){
-        Integer previousMonthNumber = taxMonthService.findFirstByTaxYearIdOrderByNumberDesc(taxYearId)
-                .map(TaxMonth::getNumber)
-                .orElse(0);
+        Integer previousMonthNumber = taxMonthService.findFirstByTaxYearIdOrderByNumberDesc(taxYearId).getNumber();
         TaxMonthDTO taxMonthDTO = new TaxMonthDTO();
         if (previousMonthNumber > 11){
             return "redirect:/view/businesses/"+businessId+"/tax-years/"+taxYearId;
@@ -81,7 +73,7 @@ public class TaxMonthViewController {
         return "tax-months/add-form";
     }
 
-    @PostMapping("")                            // todo walidacje zeby nie dodać takiego samego
+    @PostMapping("")                            // todo walidacje zeby nie dodać takiego samego lub pominąć formularz
     public String add(@Valid TaxMonthDTO taxMonthDTO,
                       BindingResult result,
                       @PathVariable(name = "taxYearId") Long taxYearId,
@@ -90,25 +82,8 @@ public class TaxMonthViewController {
             return "tax-years/add-form";
         }
         TaxYear taxYear = taxYearService.get(taxYearId).get();
-        TaxMonth taxMonth = taxMonthMapper.toEntity(taxMonthDTO,
-                taxYear);
+        taxMonthService.add(taxMonthDTO, taxYear);
 
-        List<TaxYear> newerYears = taxYearService.findByBusinessIdAndYearGreaterThan(businessId, taxYear.getYear());
-        newerYears.forEach(ty -> {
-            ty.setUpToDate(false);
-            taxYearService.save(ty);
-            taxMonthService.findByTaxYearIdOrderByNumberAsc(ty.getId()).forEach(m -> {
-                m.setUpToDate(false);
-                taxMonthService.save(m);
-            });
-        });
-        List<TaxMonth> nextMonths = taxMonthService.findByTaxYearIdAndNumberGreaterThan(taxYearId, taxMonth.getNumber());
-        nextMonths.forEach(m-> {
-            m.setUpToDate(false);
-            taxMonthService.save(m);
-        });
-
-        taxMonthService.save(taxMonth);
         return "redirect:/view/businesses/"+businessId+"/tax-years/"+taxYearId;
     }
 

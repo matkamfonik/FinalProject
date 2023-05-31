@@ -17,7 +17,7 @@ public class TaxMonthDTO {
     @NotNull
     @Min(value = 1)
     @Max(value = 12)
-    private Integer number;
+    private Integer number = 0;
 
     private BigDecimal income = BigDecimal.valueOf(0L, 2);
 

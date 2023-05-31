@@ -1,11 +1,14 @@
 package pl.coderslab.finalproject.mappers;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import pl.coderslab.finalproject.dtos.CostPositionDTO;
 import pl.coderslab.finalproject.entities.*;
+import pl.coderslab.finalproject.services.api.TaxMonthApiService;
 
 
 @Component
+@RequiredArgsConstructor
 public class CostPositionMapper {
 
     public CostPosition toEntity(CostPositionDTO costPositionDTO, TaxMonth taxMonth, CostType costType) {

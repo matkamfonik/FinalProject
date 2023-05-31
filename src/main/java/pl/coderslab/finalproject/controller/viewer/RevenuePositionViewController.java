@@ -9,6 +9,8 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import pl.coderslab.finalproject.dtos.RevenuePositionDTO;
+import pl.coderslab.finalproject.entities.TaxMonth;
+import pl.coderslab.finalproject.entities.TaxYear;
 import pl.coderslab.finalproject.services.interfaces.*;
 
 
@@ -22,6 +24,10 @@ public class RevenuePositionViewController {
 
     private final RevenuePositionService revenuePositionService;
 
+    private final TaxMonthService taxMonthService;
+
+    private final TaxYearService taxYearService;
+
     @GetMapping("")
     public String add(Model model) {
         model.addAttribute("revenuePosition", new RevenuePositionDTO());
@@ -29,8 +35,7 @@ public class RevenuePositionViewController {
     }
 
     @PostMapping("")
-    public String add(Model model,
-                      @ModelAttribute(name = "revenuePosition") @Valid RevenuePositionDTO revenuePositionDTO,
+    public String add(@ModelAttribute(name = "revenuePosition") @Valid RevenuePositionDTO revenuePositionDTO,
                       BindingResult result,
                       @PathVariable(name = "taxMonthId") Long taxMonthId,
                       @PathVariable(name = "businessId") Long businessId,
@@ -38,7 +43,12 @@ public class RevenuePositionViewController {
         if (result.hasErrors()) {
             return "cost-positions/add-form";
         }
-        revenuePositionService.save(revenuePositionDTO, taxMonthId, businessId, taxYearId);
+        TaxMonth taxMonth = taxMonthService.get(taxMonthId).get();
+        revenuePositionService.add(revenuePositionDTO, taxMonth);
+        TaxYear taxYear = taxYearService.get(taxYearId).get();                      //todo przenieść do posta w ApiControllerze
+        taxMonthService.setNextMonthsNotUpToDate(taxMonthId, taxYear);              //todo przenieść do posta w ApiControllerze
+        taxMonthService.update(taxMonthId, businessId);                             //todo przenieść do posta w ApiControllerze
+        taxYearService.update(taxYearId, businessId);                               //todo przenieść do posta w ApiControllerze
 
         return "redirect:/view/businesses/" + businessId + "/tax-years/" + taxYearId + "/tax-months/" + taxMonthId;
     }

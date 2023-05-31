@@ -31,7 +31,7 @@
         <tr>
         <td>${i = 1+i}</td>
         <td>${costPosition.name}</td>
-        <td>${costPosition.costType.name}</td>
+        <td>${costPosition.costTypeName}</td>
         <td>${costPosition.netto}</td>
         <td>${costPosition.vat}</td>
         <td>${costPosition.brutto}</td>

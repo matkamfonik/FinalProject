@@ -1,13 +1,14 @@
 package pl.coderslab.finalproject.services.api;
 
-import jakarta.persistence.EntityNotFoundException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.stereotype.Service;
 import pl.coderslab.finalproject.dtos.TaxMonthDTO;
+import pl.coderslab.finalproject.dtos.TaxYearDTO;
 import pl.coderslab.finalproject.entities.TaxMonth;
 import pl.coderslab.finalproject.entities.TaxYear;
+import pl.coderslab.finalproject.entities.TaxationForm;
 import pl.coderslab.finalproject.mappers.TaxMonthMapper;
 import pl.coderslab.finalproject.repository.TaxMonthRepository;
 import pl.coderslab.finalproject.services.calculation.TaxMonthCalculationService;
@@ -15,6 +16,7 @@ import pl.coderslab.finalproject.services.interfaces.TaxMonthService;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -23,80 +25,87 @@ import java.util.Optional;
 public class TaxMonthApiService implements TaxMonthService {
     private final TaxMonthRepository taxMonthRepository;
 
-    private final TaxYearApiService taxYearService;
-
     private final TaxMonthCalculationService taxMonthCalculationService;
 
     private final TaxMonthMapper taxMonthMapper;
 
+
     @Override
-    public List<TaxMonth> getList() {
-        return taxMonthRepository.findAll();
+    public List<TaxMonthDTO> findByTaxYearIdOrderByNumberAsc(Long yearId) {
+        return taxMonthRepository.findByTaxYearIdOrderByNumberAsc(yearId).stream().map(taxMonthMapper::toDto).collect(Collectors.toList());
     }
 
     @Override
-    public List<TaxMonth> findByTaxYearIdOrderByNumberAsc(Long yearId) {
-        return taxMonthRepository.findByTaxYearIdOrderByNumberAsc(yearId);
+    public List<TaxMonthDTO> findByTaxYearIdAndNumberGreaterThan(Long taxYearId, Integer monthNumber) {
+        return taxMonthRepository.findByTaxYearIdAndNumberGreaterThan(taxYearId, monthNumber).stream().map(taxMonthMapper::toDto).collect(Collectors.toList());
     }
 
     @Override
-    public Optional<TaxMonth> findByTaxYearAndNumber(TaxYear taxYear, Integer monthNumber) {
-        return taxMonthRepository.findByTaxYearAndNumber(taxYear, monthNumber);
-    }
-
-    @Override
-    public List<TaxMonth> findByTaxYearIdAndNumberGreaterThan(Long taxYearId, Integer monthNumber) {
-        return taxMonthRepository.findByTaxYearIdAndNumberGreaterThan(taxYearId, monthNumber);
-    }
-
-    @Override
-    public Optional<TaxMonth> findFirstByTaxYearIdOrderByNumberDesc(Long taxYearId) {
-        return taxMonthRepository.findFirstByTaxYearIdOrderByNumberDesc(taxYearId);
+    public TaxMonthDTO findFirstByTaxYearIdOrderByNumberDesc(Long taxYearId) {
+        return taxMonthMapper.toDto(taxMonthRepository.findFirstByTaxYearIdOrderByNumberDesc(taxYearId).orElse(new TaxMonth()));
     }
 
     @Override
     public Optional<TaxMonth> findPrevious(Long taxMonthId) {
         TaxMonth taxMonth = taxMonthRepository.findById(taxMonthId).get();
         Optional<TaxMonth> previousTaxMonth;
-        if (taxMonth.getNumber() == 1) {
-            previousTaxMonth = taxMonthRepository.findFirstByTaxYearYearAndNumber(taxMonth.getTaxYear().getYear() - 1, 12);
+        if (taxMonth.getNumber() > 1) {
+            previousTaxMonth = taxMonthRepository.findByTaxYearIdAndNumber(taxMonth.getTaxYear().getId(), taxMonth.getNumber() - 1);
         } else {
-            previousTaxMonth = taxMonthRepository.findByTaxYearAndNumber(taxMonth.getTaxYear(), taxMonth.getNumber() - 1);
+            previousTaxMonth = taxMonthRepository.findFirstByTaxYearYearAndNumber(taxMonth.getTaxYear().getYear() - 1, 12);
         }
         return previousTaxMonth;
     }
 
     @Override
-    public TaxMonthDTO update(Long taxMonthId, Long businessId) {
-        TaxMonth taxMonth = taxMonthCalculationService.calculate(taxMonthId, businessId);
+    public void update(Long taxMonthId, Long businessId) {
+        TaxMonth taxMonth = this.get(taxMonthId).get();
+        TaxationForm taxationForm = taxMonth.getTaxYear().getBusiness().getTaxationForm();
+        TaxMonth previousMonth = this.findPrevious(taxMonth.getId()).orElse(new TaxMonth());
+        taxMonthCalculationService.calculate(taxMonth, taxationForm, previousMonth);
         taxMonthRepository.save(taxMonth);
-        return taxMonthMapper.toDto(this.get(taxMonthId).orElseThrow(EntityNotFoundException::new));
+        this.setNextMonthsNotUpToDate(taxMonthId, taxMonth.getTaxYear());
     }
 
     @Override
-    public Optional<TaxMonth> get(Long id) {
-        return taxMonthRepository.findById(id);
+    public TaxMonthDTO getDTO(Long taxMonthId) {
+        return taxMonthRepository.findById(taxMonthId).map(taxMonthMapper::toDto).orElse(new TaxMonthDTO());
     }
 
     @Override
-    public void save(TaxMonth taxMonth) {
+    public Optional<TaxMonth> get(Long taxMonthId) {
+        return taxMonthRepository.findById(taxMonthId);
+    }
+
+    @Override
+    public void add(TaxMonthDTO taxMonthDTO, TaxYear taxYear) {
+        TaxMonth taxMonth = taxMonthMapper.toEntity(taxMonthDTO, taxYear);
+        taxMonthRepository.save(taxMonth);
+
+        this.setNextMonthsNotUpToDate(taxMonth.getId(), taxYear);
+    }
+
+    @Override
+    public void patch(TaxMonthDTO taxMonthDTO, TaxYear taxYear) {
+        TaxMonth taxMonth = taxMonthMapper.toEntity(taxMonthDTO, taxYear);
         taxMonthRepository.save(taxMonth);
     }
 
-    public void setNextMonthsNotUpToDate(Long taxMonthId, Long businessId, Long taxYearId) {
-        List<TaxYear> newerYears = taxYearService.findByBusinessIdAndYearGreaterThan(businessId, taxYearService.get(taxYearId).get().getYear());
-        newerYears.forEach(t -> {
-            t.setUpToDate(false);
-            taxYearService.save(t);
-            this.findByTaxYearIdOrderByNumberAsc(t.getId()).forEach(m -> {
-                m.setUpToDate(false);
-                this.save(m);
-            });
-        });
-        List<TaxMonth> nextMonths = this.findByTaxYearIdAndNumberGreaterThan(taxYearId, this.get(taxMonthId).get().getNumber());
-        nextMonths.forEach(m -> {
-            m.setUpToDate(false);
-            this.save(m);
-        });
+    @Override
+    public List<TaxMonth> findNextMonths(Long yearId, Integer taxMonthNumber, Integer taxYearYear) {
+        return taxMonthRepository.findNextMonths(yearId, taxMonthNumber, taxYearYear);
     }
+
+
+    public void setNextMonthsNotUpToDate(Long taxMonthId, TaxYear taxYear) {
+        TaxMonth taxMonth = this.get(taxMonthId).get();
+        this.findNextMonths(taxMonth.getTaxYear().getId(), taxMonth.getNumber(), taxMonth.getTaxYear().getYear())
+                .forEach(tm -> {
+                    tm.setUpToDate(false);
+                    this.patch(taxMonthMapper.toDto(tm), taxYear);
+                });
+    }
+
+
+
 }

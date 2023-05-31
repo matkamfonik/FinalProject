@@ -1,6 +1,5 @@
 package pl.coderslab.finalproject.controller.viewer;
 
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import jakarta.websocket.server.PathParam;
@@ -13,11 +12,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import pl.coderslab.finalproject.CurrentUser;
 import pl.coderslab.finalproject.dtos.ClientDTO;
-import pl.coderslab.finalproject.entities.Client;
 import pl.coderslab.finalproject.httpClients.BlockFirmy;
 import pl.coderslab.finalproject.httpClients.ClientClient;
-import pl.coderslab.finalproject.httpClients.Firma;
-import pl.coderslab.finalproject.mappers.ClientMapper;
 import pl.coderslab.finalproject.services.interfaces.ClientService;
 
 import java.util.List;
@@ -34,7 +30,7 @@ public class ClientViewController {
 
     @GetMapping("/{id}")
     public String show(Model model, @PathVariable(name = "id") Long id) {
-        ClientDTO clientDTO = clientService.get(id);
+        ClientDTO clientDTO = clientService.getDTO(id);
         model.addAttribute("client", clientDTO);
         return "clients/details";
     }
@@ -53,7 +49,9 @@ public class ClientViewController {
     }
 
     @PostMapping("")
-    public String add(@ModelAttribute(name = "client") @Valid ClientDTO clientDTO, BindingResult result, @AuthenticationPrincipal CurrentUser currentUser) {
+    public String add(@ModelAttribute(name = "client") @Valid ClientDTO clientDTO,
+                      BindingResult result,
+                      @AuthenticationPrincipal CurrentUser currentUser) {
         if (result.hasErrors()) {
             return "clients/add-form";
         }
@@ -67,7 +65,7 @@ public class ClientViewController {
         if (blockFirmy == null) {
             return "clients/add-form";
         }
-        ClientDTO clientDTO = clientService.getClientDTO(blockFirmy);
+        ClientDTO clientDTO = clientService.extractClientDTO(blockFirmy);
         model.addAttribute("client", clientDTO);
         return "clients/add-form";
     }
@@ -78,7 +76,7 @@ public class ClientViewController {
         if (blockFirmy == null) {
             return "clients/add-form";
         }
-        ClientDTO clientDTO = clientService.getClientDTO(blockFirmy);
+        ClientDTO clientDTO = clientService.extractClientDTO(blockFirmy);
         model.addAttribute("client", clientDTO);
         return "clients/add-form";
     }

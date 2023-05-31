@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import pl.coderslab.finalproject.CurrentUser;
 import pl.coderslab.finalproject.dtos.BusinessDTO;
 import pl.coderslab.finalproject.dtos.TaxYearDTO;
+import pl.coderslab.finalproject.entities.TaxationForm;
 import pl.coderslab.finalproject.services.interfaces.BusinessService;
 import pl.coderslab.finalproject.services.interfaces.TaxYearService;
 import pl.coderslab.finalproject.services.interfaces.TaxationFormService;
@@ -32,7 +33,7 @@ public class BusinessViewController {
 
     @GetMapping("/{id}")
     public String show(Model model, @PathVariable(name = "id") Long id){
-        BusinessDTO businessDTO = businessService.get(id);
+        BusinessDTO businessDTO = businessService.getDTO(id);
         List<TaxYearDTO> taxYears = taxYearService.findAllTaxYears(id);
         model.addAttribute("business", businessDTO);
         model.addAttribute("taxYears", taxYears);
@@ -41,17 +42,24 @@ public class BusinessViewController {
 
     @GetMapping("")
     public String add(Model model){
+        List<TaxationForm> taxationForms = taxationFormService.getList();
         model.addAttribute("business", new BusinessDTO());
-        model.addAttribute("taxationForms", taxationFormService.getList());
+        model.addAttribute("taxationForms", taxationForms);
         return "businesses/add-form";
     }
 
     @PostMapping("")
-    public String add(Model model,@ModelAttribute(name = "business") @Valid BusinessDTO businessDTO, BindingResult result, @AuthenticationPrincipal CurrentUser currentUser){
+    public String add(Model model,
+                      @ModelAttribute(name = "business") @Valid BusinessDTO businessDTO,
+                      BindingResult result,
+                      @AuthenticationPrincipal CurrentUser currentUser){
+
         if (result.hasErrors()){
-            model.addAttribute("taxationForms", taxationFormService.getList());
+            List<TaxationForm> taxationForms = taxationFormService.getList();
+            model.addAttribute("taxationForms", taxationForms);
             return "businesses/add-form";
         }
+
         businessService.add(businessDTO, currentUser);
         return "redirect:/view";
     }

@@ -3,15 +3,14 @@ package pl.coderslab.finalproject.controller.viewer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
-import pl.coderslab.finalproject.services.interfaces.UserService;
 
 @Controller
 @Slf4j
 @RequiredArgsConstructor
 public class UserController {
  
-    private final UserService userService;
-
+//    private final UserService userService;
+//
 //    @GetMapping("/create-user")
 //    @ResponseBody
 //    public String createUser() {
@@ -21,14 +20,14 @@ public class UserController {
 //        userService.saveUser(user);
 //        return "admin";
 //    }
-
+//
 //    @GetMapping("/admin")
 //    @ResponseBody
 //    public String userInfo(@AuthenticationPrincipal UserDetails customUser) {
 //        log.info("customUser class {} " , customUser.getClass());
 //        return "You are logged as " + customUser;
 //    }
-
+//
 //    @GetMapping("/admin")
 //    @ResponseBody
 //    public String admin(@AuthenticationPrincipal CurrentUser customUser) {

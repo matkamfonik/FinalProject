@@ -1,10 +1,7 @@
 package pl.coderslab.finalproject.mappers;
 
 import org.springframework.stereotype.Component;
-import pl.coderslab.finalproject.dtos.CostPositionDTO;
 import pl.coderslab.finalproject.dtos.RevenuePositionDTO;
-import pl.coderslab.finalproject.entities.CostPosition;
-import pl.coderslab.finalproject.entities.CostType;
 import pl.coderslab.finalproject.entities.RevenuePosition;
 import pl.coderslab.finalproject.entities.TaxMonth;
 

@@ -34,8 +34,13 @@ public class BusinessApiService implements BusinessService {
     }
 
     @Override
-    public BusinessDTO get(Long id) {
-        return businessMapper.toDto(businessRepository.findById(id).orElseThrow(EntityNotFoundException::new));
+    public BusinessDTO getDTO(Long id) {
+        return businessRepository.findById(id).map(businessMapper::toDto) .orElseThrow(EntityNotFoundException::new);
+    }
+
+    @Override
+    public Optional<Business> get(Long id){
+        return businessRepository.findById(id);
     }
 
     @Override

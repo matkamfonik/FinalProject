@@ -7,13 +7,13 @@ import lombok.Setter;
 import org.springframework.stereotype.Service;
 import pl.coderslab.finalproject.dtos.RevenuePositionDTO;
 import pl.coderslab.finalproject.entities.RevenuePosition;
+import pl.coderslab.finalproject.entities.TaxMonth;
 import pl.coderslab.finalproject.mappers.RevenuePositionMapper;
 import pl.coderslab.finalproject.repository.RevenuePositionRepository;
 import pl.coderslab.finalproject.services.calculation.RevenueCalculationService;
 import pl.coderslab.finalproject.services.interfaces.RevenuePositionService;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,10 +25,6 @@ public class RevenuePositionApiService implements RevenuePositionService {
 
     private final RevenueCalculationService revenueCalculationService;
 
-    private final TaxYearApiService taxYearService;
-
-    private final TaxMonthApiService taxMonthService;
-
     private final RevenuePositionMapper revenuePositionMapper;
 
     @Override
@@ -37,10 +33,11 @@ public class RevenuePositionApiService implements RevenuePositionService {
     }
 
     @Override
-    public void save(RevenuePositionDTO revenuePositionDTO, Long taxMonthId, Long businessId, Long taxYearId) {
-        RevenuePosition revenuePosition = revenueCalculationService.calculate(revenuePositionDTO, taxMonthId);
+    public void add(RevenuePositionDTO revenuePositionDTO, TaxMonth taxMonth) {
+        RevenuePosition revenuePosition = revenuePositionMapper.toEntity(revenuePositionDTO, taxMonth);
+        revenueCalculationService.calculate(revenuePosition);
         revenuePositionRepository.save(revenuePosition);
-        taxMonthService.setNextMonthsNotUpToDate(taxMonthId, businessId, taxYearId);
+
     }
 
     @Override

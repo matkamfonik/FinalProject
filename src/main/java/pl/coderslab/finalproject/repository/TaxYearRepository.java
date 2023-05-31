@@ -9,10 +9,10 @@ import java.util.Optional;
 
 public interface TaxYearRepository extends JpaRepository <TaxYear, Long> {
 
-    public List<TaxYear> findAllTaxYearNameByBusinessIdOrderByYearAsc(Long businessId);
+    List<TaxYear> findAllTaxYearNameByBusinessIdOrderByYearAsc(Long businessId);
 
-    public Optional<TaxYear> findByYearAndBusinessId(int year, Long businessId);
+    Optional<TaxYear> findByYearAndBusinessId(int year, Long businessId);
 
-    public List<TaxYear> findByBusinessIdAndYearGreaterThan(Long businessId, int year);
+    List<TaxYear> findByBusinessIdAndYearGreaterThan(Long businessId, int year);
 
 }

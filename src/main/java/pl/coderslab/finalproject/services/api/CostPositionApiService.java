@@ -7,13 +7,15 @@ import lombok.Setter;
 import org.springframework.stereotype.Service;
 import pl.coderslab.finalproject.dtos.CostPositionDTO;
 import pl.coderslab.finalproject.entities.CostPosition;
+import pl.coderslab.finalproject.entities.CostType;
+import pl.coderslab.finalproject.entities.TaxMonth;
+import pl.coderslab.finalproject.entities.TaxationForm;
 import pl.coderslab.finalproject.mappers.CostPositionMapper;
 import pl.coderslab.finalproject.repository.CostPositionRepository;
 import pl.coderslab.finalproject.services.calculation.CostCalculationService;
 import pl.coderslab.finalproject.services.interfaces.CostPositionService;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,11 +27,13 @@ public class CostPositionApiService implements CostPositionService {
 
     private final CostCalculationService costCalculationService;
 
-    private final TaxYearApiService taxYearService;
-
-    private final TaxMonthApiService taxMonthService;
-
     private final CostPositionMapper costPositionMapper;
+
+    private final CostTypeApiService costTypeService;
+
+    private final BusinessApiService businessService;
+
+    private final TaxationFormApiService taxationFormService;
 
     @Override
     public CostPositionDTO get(Long id) {
@@ -37,10 +41,13 @@ public class CostPositionApiService implements CostPositionService {
     }
 
     @Override
-    public void save(CostPositionDTO costPositionDTO, Long taxMonthId, Long businessId, Long taxYearId) {
-        CostPosition costPosition = costCalculationService.calculate(costPositionDTO, taxMonthId, businessId);
+    public void add(CostPositionDTO costPositionDTO, TaxMonth taxMonth, Long businessId, Long taxYearId) {
+        CostType costType = costTypeService.get(costPositionDTO.getCostTypeId()).get();
+        CostPosition costPosition = costPositionMapper.toEntity(costPositionDTO, taxMonth, costType);
+        Long taxationFormId = businessService.getDTO(businessId).getTaxationFormId();
+        TaxationForm taxationForm = taxationFormService.get(taxationFormId).get();
+        costCalculationService.calculate(costPosition, taxationForm);
         costPositionRepository.save(costPosition);
-        taxMonthService.setNextMonthsNotUpToDate(taxMonthId, businessId, taxYearId);
     }
 
     @Override

@@ -1,6 +1,5 @@
 package pl.coderslab.finalproject.services.interfaces;
 
-import org.springframework.stereotype.Service;
 import pl.coderslab.finalproject.entities.TaxationForm;
 
 import java.util.List;
