@@ -100,4 +100,12 @@ public class TaxMonthViewController {
         return "redirect:/view/businesses/"+businessId+"/tax-years/"+taxYearId;
     }
 
+    @GetMapping("/{id}/patch")
+    public String patch(@PathVariable(name = "id") Long taxMonthId,
+                        @PathVariable(name = "taxYearId") Long taxYearId,
+                        @PathVariable(name = "businessId") Long businessId){
+        taxMonthService.update(taxMonthId, businessId);
+        return "redirect:/view/businesses/"+businessId+"/tax-years/"+taxYearId;
+    }
+
 }
