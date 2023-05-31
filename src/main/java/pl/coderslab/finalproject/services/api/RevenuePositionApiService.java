@@ -4,6 +4,7 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import pl.coderslab.finalproject.dtos.RevenuePositionDTO;
 import pl.coderslab.finalproject.entities.RevenuePosition;
@@ -17,6 +18,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 @Getter
 @Setter
@@ -28,16 +30,22 @@ public class RevenuePositionApiService implements RevenuePositionService {
     private final RevenuePositionMapper revenuePositionMapper;
 
     @Override
-    public RevenuePositionDTO get(Long id) {
+    public RevenuePositionDTO getDTO(Long id) {
         return revenuePositionMapper.toDto(revenuePositionRepository.findById(id).orElseThrow(EntityNotFoundException::new));
     }
 
     @Override
     public void add(RevenuePositionDTO revenuePositionDTO, TaxMonth taxMonth) {
+        log.info(revenuePositionDTO.toString());
         RevenuePosition revenuePosition = revenuePositionMapper.toEntity(revenuePositionDTO, taxMonth);
         revenueCalculationService.calculate(revenuePosition);
         revenuePositionRepository.save(revenuePosition);
 
+    }
+
+    @Override
+    public void delete(Long id){
+        revenuePositionRepository.deleteById(id);
     }
 
     @Override

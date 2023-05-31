@@ -43,7 +43,7 @@ public class Business {
     @REGON
     private String regon;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "user_id")
     private User user;
 

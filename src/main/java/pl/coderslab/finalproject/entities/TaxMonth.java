@@ -23,7 +23,7 @@ public class TaxMonth {
     @Max(12)
     private Integer number;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "tax_year_id")
     private TaxYear taxYear;
 

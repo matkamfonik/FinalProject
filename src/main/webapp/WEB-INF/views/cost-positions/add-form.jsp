@@ -8,7 +8,7 @@
 </head>
 <body>
 <h1>Dodaj pozycję kosztu</h1>
-<form:form method="post" modelAttribute="costPosition" action="/view/businesses/${businessId}/tax-years/${taxYearId}/tax-months/${taxMonthId}/cost-positions">
+<form:form method="post" modelAttribute="costPosition">
 
     <label for="name">Nazwa</label><br>
     <form:input path="name"/><br>
@@ -28,7 +28,7 @@
 
     <input type="submit" value="Dodaj">
 </form:form>
-<form:form action="/view/businesses/${businessId}/tax-years/${taxYearId}/tax-months/${taxMonthId}/cost-positions/health-insurance" method="get">
+<form:form action="health-insurance" method="get">
     <input type="submit" value="Oblicz składkę zdrowotną">
 </form:form>
 

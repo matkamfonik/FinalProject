@@ -22,7 +22,7 @@ public class TaxYear {
     @Column(unique = true)
     private int year;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "business_id")
     private Business business;
 

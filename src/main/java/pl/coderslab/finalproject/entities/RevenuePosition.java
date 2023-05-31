@@ -33,7 +33,7 @@ public class RevenuePosition {
 
     private BigDecimal brutto;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "tax_month_id")
     private TaxMonth taxMonth;
 

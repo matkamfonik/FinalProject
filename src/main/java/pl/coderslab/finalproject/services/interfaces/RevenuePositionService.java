@@ -7,9 +7,11 @@ import java.util.List;
 
 public interface RevenuePositionService {
 
-    RevenuePositionDTO get(Long id);
+    RevenuePositionDTO getDTO(Long id);
 
     void add(RevenuePositionDTO revenuePositionDTO, TaxMonth taxMonth);
+
+    void delete(Long id);
 
     List<RevenuePositionDTO> findAllRevenuePositions(Long taxMonthId);
 }

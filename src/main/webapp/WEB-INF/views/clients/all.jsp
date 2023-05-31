@@ -38,5 +38,6 @@
     </tr>
     </tbody>
 </table>
+<a href="/view">Wróć</a>
 </body>
 </html>

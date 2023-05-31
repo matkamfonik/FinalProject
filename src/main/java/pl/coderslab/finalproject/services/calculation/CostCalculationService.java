@@ -6,7 +6,6 @@ import lombok.Setter;
 import org.springframework.stereotype.Service;
 import pl.coderslab.finalproject.dtos.CostPositionDTO;
 import pl.coderslab.finalproject.entities.*;
-import pl.coderslab.finalproject.mappers.CostPositionMapper;
 import pl.coderslab.finalproject.services.api.*;
 
 import java.math.BigDecimal;
@@ -23,8 +22,10 @@ public class CostCalculationService {
     private final TaxationFormApiService taxationFormService;
 
 
-    public CostPositionDTO calculateHealthInsurance (Long businessId, int taxYearYear, TaxMonth previousTaxMonth){
-        CostPositionDTO costPositionDTO = new CostPositionDTO();
+    public void calculateHealthInsurance (CostPositionDTO costPositionDTO, Long businessId, int taxYearYear, TaxMonth previousTaxMonth){
+        if(costPositionDTO == null){
+            costPositionDTO = new CostPositionDTO();
+        }
         costPositionDTO.setName("Składka zdrowotna");
         costPositionDTO.setCostTypeId(1L);
         costPositionDTO.setVatRate(BigDecimal.valueOf(0L, 2));
@@ -41,7 +42,6 @@ public class CostCalculationService {
         } else {
             costPositionDTO.setNetto(healthInsurance);
         }
-        return costPositionDTO;
     }
 
     public void calculate(CostPosition costPosition, TaxationForm taxationForm) {

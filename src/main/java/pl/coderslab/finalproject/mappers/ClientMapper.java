@@ -11,6 +11,7 @@ public class ClientMapper {
 
     public Client toEntity(ClientDTO clientDTO, User user) {
         Client client = new Client();
+        client.setId(clientDTO.getId());
         client.setName(clientDTO.getName());
         client.setCity(clientDTO.getCity());
         client.setPostalCode(clientDTO.getPostalCode());

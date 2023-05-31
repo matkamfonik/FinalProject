@@ -16,6 +16,7 @@ import pl.coderslab.finalproject.services.calculation.CostCalculationService;
 import pl.coderslab.finalproject.services.interfaces.CostPositionService;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -36,8 +37,13 @@ public class CostPositionApiService implements CostPositionService {
     private final TaxationFormApiService taxationFormService;
 
     @Override
-    public CostPositionDTO get(Long id) {
+    public CostPositionDTO getDTO(Long id) {
         return costPositionMapper.toDto(costPositionRepository.findById(id).orElseThrow(EntityNotFoundException::new));
+    }
+
+    @Override
+    public void delete(Long id){
+        costPositionRepository.deleteById(id);
     }
 
     @Override

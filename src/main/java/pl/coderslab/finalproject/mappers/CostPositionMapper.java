@@ -13,6 +13,7 @@ public class CostPositionMapper {
 
     public CostPosition toEntity(CostPositionDTO costPositionDTO, TaxMonth taxMonth, CostType costType) {
         CostPosition costPosition = new CostPosition();
+        costPosition.setId(costPositionDTO.getId());
         costPosition.setName(costPositionDTO.getName());
         costPosition.setNetto(costPositionDTO.getNetto());
         costPosition.setVatRate(costPositionDTO.getVatRate());

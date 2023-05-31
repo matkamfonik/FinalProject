@@ -11,6 +11,7 @@ public class RevenuePositionMapper {
 
     public RevenuePosition toEntity(RevenuePositionDTO revenuePositionDTO, TaxMonth taxMonth) {
         RevenuePosition revenuePosition = new RevenuePosition();
+        revenuePosition.setId(revenuePositionDTO.getId());
         revenuePosition.setName(revenuePositionDTO.getName());
         revenuePosition.setNetto(revenuePositionDTO.getNetto());
         revenuePosition.setVatRate(revenuePositionDTO.getVatRate());

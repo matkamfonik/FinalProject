@@ -7,7 +7,9 @@ import java.util.List;
 
 public interface CostPositionService {
 
-    CostPositionDTO get(Long id);
+    CostPositionDTO getDTO(Long id);
+
+    void delete(Long id);
 
     void add(CostPositionDTO costPositionDTO, TaxMonth taxMonth, Long businessId, Long taxYearId);
 

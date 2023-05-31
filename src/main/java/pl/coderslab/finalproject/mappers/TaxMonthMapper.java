@@ -13,6 +13,7 @@ public class TaxMonthMapper {
 
     public TaxMonth toEntity(TaxMonthDTO taxMonthDTO, TaxYear taxYear) {
         TaxMonth taxMonth = new TaxMonth();
+        taxMonth.setId(taxMonthDTO.getId());
         taxMonth.setNumber(taxMonthDTO.getNumber());
         taxMonth.setTaxYear(taxYear);
         taxMonth.setIncome(taxMonthDTO.getIncome());

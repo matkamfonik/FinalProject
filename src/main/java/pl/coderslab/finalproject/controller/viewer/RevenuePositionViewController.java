@@ -21,7 +21,6 @@ import pl.coderslab.finalproject.services.interfaces.*;
 @RequestMapping("/view/businesses/{businessId}/tax-years/{taxYearId}/tax-months/{taxMonthId}/revenue-positions")
 public class RevenuePositionViewController {
 
-
     private final RevenuePositionService revenuePositionService;
 
     private final TaxMonthService taxMonthService;
@@ -34,7 +33,30 @@ public class RevenuePositionViewController {
         return "revenue-positions/add-form";
     }
 
-    @PostMapping("")
+    @GetMapping("/{id}")
+    public String edit(Model model,
+                       @PathVariable(name = "id") Long id) {
+        model.addAttribute("revenuePosition", revenuePositionService.getDTO(id));
+        return "revenue-positions/add-form";
+    }
+
+    @GetMapping("/{id}/delete")
+    public String delete(@PathVariable(name = "id") Long id,
+                         @PathVariable(name = "taxMonthId") Long taxMonthId,
+                         @PathVariable(name = "taxYearId") Long taxYearId,
+                         @PathVariable(name = "businessId") Long businessId){
+
+        revenuePositionService.delete(id);
+
+        TaxYear taxYear = taxYearService.get(taxYearId).get();
+        taxMonthService.setNextMonthsNotUpToDate(taxMonthId, taxYear);
+        taxMonthService.update(taxMonthId, businessId);
+        taxYearService.update(taxYearId, businessId);
+
+        return "redirect:/view/businesses/" + businessId + "/tax-years/" + taxYearId + "/tax-months/" +taxMonthId;
+    }
+
+    @PostMapping(value = {"", "/{id}"})
     public String add(@ModelAttribute(name = "revenuePosition") @Valid RevenuePositionDTO revenuePositionDTO,
                       BindingResult result,
                       @PathVariable(name = "taxMonthId") Long taxMonthId,
@@ -52,6 +74,5 @@ public class RevenuePositionViewController {
 
         return "redirect:/view/businesses/" + businessId + "/tax-years/" + taxYearId + "/tax-months/" + taxMonthId;
     }
-
 
 }

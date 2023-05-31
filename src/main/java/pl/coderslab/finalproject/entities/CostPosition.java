@@ -40,7 +40,7 @@ public class CostPosition {
 
     private BigDecimal costIncluded;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "tax_month_id")
     private TaxMonth taxMonth;
 

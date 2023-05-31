@@ -12,6 +12,7 @@ public class BusinessMapper {
 
     public Business toEntity(BusinessDTO businessDTO, User user, TaxationForm taxationForm) {
         Business business = new Business();
+        business.setId(businessDTO.getId());
         business.setName(businessDTO.getName());
         business.setCity(businessDTO.getCity());
         business.setPostalCode(businessDTO.getPostalCode());

@@ -15,6 +15,7 @@ public class TaxYearMapper {
 
     public TaxYear toEntity(TaxYearDTO taxYearDTO, Long businessId) {
         TaxYear taxYear = new TaxYear();
+        taxYear.setId(taxYearDTO.getId());
         taxYear.setYear(taxYearDTO.getYear());
         taxYear.setBusiness(businessService.get(businessId).get());
         taxYear.setBalance(taxYearDTO.getBalance());

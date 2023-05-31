@@ -29,22 +29,25 @@
     <tbody>
     <c:forEach items="${costPositions}" var="costPosition">
         <tr>
-        <td>${i = 1+i}</td>
-        <td>${costPosition.name}</td>
-        <td>${costPosition.costTypeName}</td>
-        <td>${costPosition.netto}</td>
-        <td>${costPosition.vat}</td>
-        <td>${costPosition.brutto}</td>
-        <td>${costPosition.vatDeducted}</td>
-        <td>${costPosition.costIncluded}</td>
-        <td>
-            <a href="/view/businesses/${businessId}/tax-years/${taxYearId}/tax-months/${taxMonth.id}/cost-positions/${costPosition.id}">Edytuj</a>
-        </td>
+            <td>${i = 1+i}</td>
+            <td>${costPosition.name}</td>
+            <td>${costPosition.costTypeName}</td>
+            <td>${costPosition.netto}</td>
+            <td>${costPosition.vat}</td>
+            <td>${costPosition.brutto}</td>
+            <td>${costPosition.vatDeducted}</td>
+            <td>${costPosition.costIncluded}</td>
+            <td>
+                <a href="/view/businesses/${businessId}/tax-years/${taxYearId}/tax-months/${taxMonth.id}/cost-positions/${costPosition.id}/">Edytuj</a>
+            </td>
+            <td>
+                <a href="/view/businesses/${businessId}/tax-years/${taxYearId}/tax-months/${taxMonth.id}/cost-positions/${costPosition.id}/delete">Usuń</a>
+            </td>
         </tr>
     </c:forEach>
     <tr>
         <td>
-            <a href="/view/businesses/${businessId}/tax-years/${taxYearId}/tax-months/${taxMonth.id}/cost-positions">Dodaj</a>
+            <a href="/view/businesses/${businessId}/tax-years/${taxYearId}/tax-months/${taxMonth.id}/cost-positions/">Dodaj</a>
         </td>
     </tr>
     </tbody>
@@ -71,9 +74,13 @@
             <td>${revenuePosition.netto}</td>
             <td>${revenuePosition.vat}</td>
             <td>${revenuePosition.brutto}</td>
-            <td>Dodaj</td>      <%-- todo dodać fakturę --%>
+            <td>Dodaj</td>
+                <%-- todo dodać fakturę --%>
             <td>
                 <a href="/view/businesses/${businessId}/tax-years/${taxYearId}/tax-months/${taxMonth.id}/revenue-positions/${revenuePosition.id}">Edytuj</a>
+            </td>
+            <td>
+                <a href="/view/businesses/${businessId}/tax-years/${taxYearId}/tax-months/${taxMonth.id}/revenue-positions/${revenuePosition.id}/delete">Usuń</a>
             </td>
         </tr>
     </c:forEach>
