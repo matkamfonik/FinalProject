@@ -16,6 +16,8 @@ public interface TaxMonthService {
 
     void add(TaxMonthDTO taxMonthDTO, TaxYear taxYear);
 
+    void delete(Long id);
+
     List<TaxMonthDTO> findByTaxYearIdOrderByNumberAsc(Long yearId);
 
     List<TaxMonthDTO> findByTaxYearIdAndNumberGreaterThan(Long taxYearId, Integer monthNumber);

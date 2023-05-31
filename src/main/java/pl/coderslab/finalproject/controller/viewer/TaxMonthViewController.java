@@ -73,6 +73,18 @@ public class TaxMonthViewController {
         return "tax-months/add-form";
     }
 
+    @GetMapping("/{id}/delete")
+    public String delete(@PathVariable(name = "id") Long id,
+                         @PathVariable(name = "taxYearId") Long taxYearId,
+                         @PathVariable(name = "businessId") Long businessId){
+
+        taxMonthService.delete(id);
+
+//        taxYearService.update(taxYearId, businessId);
+
+        return "redirect:/view/businesses/"+businessId+"/tax-years/"+taxYearId;
+    }
+
     @PostMapping("")                            // todo walidacje zeby nie dodać takiego samego lub pominąć formularz
     public String add(@Valid TaxMonthDTO taxMonthDTO,
                       BindingResult result,
@@ -83,6 +95,7 @@ public class TaxMonthViewController {
         }
         TaxYear taxYear = taxYearService.get(taxYearId).get();
         taxMonthService.add(taxMonthDTO, taxYear);
+
 
         return "redirect:/view/businesses/"+businessId+"/tax-years/"+taxYearId;
     }

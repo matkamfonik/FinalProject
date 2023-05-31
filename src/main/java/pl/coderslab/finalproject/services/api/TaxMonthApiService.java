@@ -79,10 +79,20 @@ public class TaxMonthApiService implements TaxMonthService {
 
     @Override
     public void add(TaxMonthDTO taxMonthDTO, TaxYear taxYear) {
+
         TaxMonth taxMonth = taxMonthMapper.toEntity(taxMonthDTO, taxYear);
         taxMonthRepository.save(taxMonth);
 
         this.setNextMonthsNotUpToDate(taxMonth.getId(), taxYear);
+    }
+
+    @Override
+    public void delete(Long id){
+
+        this.setNextMonthsNotUpToDate(id, this.get(id).get().getTaxYear());
+
+        taxMonthRepository.deleteById(id);
+
     }
 
     @Override

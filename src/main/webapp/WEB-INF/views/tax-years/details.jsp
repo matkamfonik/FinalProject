@@ -60,7 +60,11 @@
                     </c:otherwise>
                 </c:choose>
             </td>
-            <td><a href="/view/businesses/${businessId}/tax-years/${taxYear.id}/tax-months/${taxMonth.id}">Szczegóły</a>
+            <td>
+                <a href="/view/businesses/${businessId}/tax-years/${taxYear.id}/tax-months/${taxMonth.id}">Szczegóły</a>
+            </td>
+            <td>
+                <a href="/view/businesses/${businessId}/tax-years/${taxYear.id}/tax-months/${taxMonth.id}/delete">Usuń</a>
             </td>
         </tr>
         <p hidden>
