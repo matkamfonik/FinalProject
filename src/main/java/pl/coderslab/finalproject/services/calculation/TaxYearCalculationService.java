@@ -31,7 +31,7 @@ public class TaxYearCalculationService {
             }
             taxYear.setVatBalance(taxYear.getVatBalance().add(tm.getVatValue(), new MathContext(5)));
         });
-        if (previousTaxYear.getUpToDate()) {
+        if (previousTaxYear.getUpToDate() && months.stream().filter(tm -> !tm.getUpToDate()).findAny().isEmpty()) {
             taxYear.setUpToDate(true);
         }
     }

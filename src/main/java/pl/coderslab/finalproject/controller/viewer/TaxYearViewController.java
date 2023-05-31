@@ -73,10 +73,11 @@ public class TaxYearViewController {
 
         return "redirect:/view/businesses/" + businessId;
     }
-//    @GetMapping("/{id}/patch")          // we viewerze musi tak zostać, w api controllerze ustawie na metodę patch
-//    public String patch(){
-//
-//        return "forward:";
-//    }
+    @GetMapping("/{id}/patch")          // we viewerze musi tak zostać, w api controllerze ustawie na metodę patch
+    public String patch(@PathVariable(name = "id") Long taxYearId,
+                        @PathVariable(name = "businessId") Long businessId){
+        taxYearService.update(taxYearId, businessId);
+        return "redirect:/view/businesses/" + businessId;
+    }
 
 }
