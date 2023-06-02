@@ -1,20 +1,18 @@
 package pl.coderslab.finalproject.services.api;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.stereotype.Service;
-import pl.coderslab.finalproject.dtos.TaxMonthDTO;
-import pl.coderslab.finalproject.dtos.TaxYearDTO;
+import pl.coderslab.finalproject.entities.TaxMonth;
 import pl.coderslab.finalproject.entities.TaxYear;
-import pl.coderslab.finalproject.mappers.TaxYearMapper;
 import pl.coderslab.finalproject.repository.TaxYearRepository;
 import pl.coderslab.finalproject.services.calculation.TaxYearCalculationService;
 import pl.coderslab.finalproject.services.interfaces.TaxYearService;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -22,8 +20,6 @@ import java.util.stream.Collectors;
 @Setter
 public class TaxYearApiService implements TaxYearService {
     private final TaxYearRepository taxYearRepository;
-
-    private final TaxYearMapper taxYearMapper;
 
     private final TaxYearCalculationService taxYearCalculationService;
 
@@ -35,19 +31,13 @@ public class TaxYearApiService implements TaxYearService {
     }
 
     @Override
-    public TaxYearDTO findByYearAndBusinessId(int year, Long businessId) {
-        return taxYearRepository.findByYearAndBusinessId(year, businessId).map(taxYearMapper::toDto).orElse(new TaxYearDTO());
+    public Optional<TaxYear> findByYearAndBusinessId(int year, Long businessId) {
+        return taxYearRepository.findByYearAndBusinessId(year, businessId);
     }
 
     @Override
-    public List<TaxYearDTO> findByBusinessIdAndYearGreaterThan(Long businessId, int year) {
-        return taxYearRepository.findByBusinessIdAndYearGreaterThan(businessId, year).stream().map(taxYearMapper::toDto).collect(Collectors.toList());
-    }
-
-
-    @Override
-    public TaxYearDTO getDTO(Long id) {
-        return taxYearRepository.findById(id).map(taxYearMapper::toDto).orElse(new TaxYearDTO());
+    public List<TaxYear> findByBusinessIdAndYearGreaterThan(Long businessId, int year) {
+        return taxYearRepository.findByBusinessIdAndYearGreaterThan(businessId, year);
     }
 
     @Override
@@ -56,47 +46,45 @@ public class TaxYearApiService implements TaxYearService {
     }
 
     @Override
-    public void save(TaxYearDTO taxYearDTO, Long businessId) {
-        TaxYear taxYear = taxYearMapper.toEntity(taxYearDTO, businessId);
-        TaxYearDTO previousTaxYear = this.findByYearAndBusinessId(taxYear.getYear() - 1, taxYear.getBusiness().getId());
-        List<TaxMonthDTO> months = taxMonthService.findByTaxYearIdOrderByNumberAsc(taxYear.getId());
-        taxYearCalculationService.calculate(taxYear, previousTaxYear, months);
+    public void save(TaxYear taxYear) {
+        Long businessId = taxYear.getBusiness().getId();
+        TaxYear previousTaxYear = this.findByYearAndBusinessId(taxYear.getYear() - 1, businessId).orElse(new TaxYear());
+        List<TaxMonth> taxMonths = taxMonthService.findByTaxYearIdOrderByNumberAsc(taxYear.getId());
+        taxYearCalculationService.calculate(taxYear, previousTaxYear, taxMonths);
         taxYearRepository.save(taxYear);
 
-        this.setNextMonthsNotUpToDate(taxYear, businessId);
+        this.setNextMonthsNotUpToDate(taxYear);
     }
 
     @Override
     public void delete(Long id){
-        TaxYear taxYear = this.get(id).get();
-        this.setNextMonthsNotUpToDate(taxYear, taxYear.getBusiness().getId());
+        TaxYear taxYear = this.get(id).orElseThrow(EntityNotFoundException::new);
+        this.setNextMonthsNotUpToDate(taxYear);
         taxYearRepository.deleteById(id);
     }
 
     @Override
-    public void update(Long taxYearId, Long businessId){
-        TaxYear taxYear = this.get(taxYearId).get();
-        TaxYearDTO previousTaxYear = this.findByYearAndBusinessId(taxYear.getYear() - 1, taxYear.getBusiness().getId());
-        List<TaxMonthDTO> months = taxMonthService.findByTaxYearIdOrderByNumberAsc(taxYear.getId());
+    public void update(TaxYear taxYear){
+        TaxYear previousTaxYear = this.findByYearAndBusinessId(taxYear.getYear() - 1, taxYear.getBusiness().getId()).orElse(new TaxYear());
+        List<TaxMonth> months = taxMonthService.findByTaxYearIdOrderByNumberAsc(taxYear.getId());
         taxYearCalculationService.calculate(taxYear, previousTaxYear, months);
         taxYearRepository.save(taxYear);
-        this.setNextMonthsNotUpToDate(taxYear, businessId);
+        this.setNextMonthsNotUpToDate(taxYear);
     }
 
-    public void setNextMonthsNotUpToDate(TaxYear taxYear, Long businessId) {
-        List<TaxYearDTO> newerYears = this.findByBusinessIdAndYearGreaterThan(businessId, taxYear.getYear());
+    public void setNextMonthsNotUpToDate(TaxYear taxYear) {
+        List<TaxYear> newerYears = this.findByBusinessIdAndYearGreaterThan(taxYear.getBusiness().getId(), taxYear.getYear());
         newerYears.forEach(ty -> {
             ty.setUpToDate(false);
-            this.patch(ty, businessId);
+            this.patch(ty);
             taxMonthService.findByTaxYearIdOrderByNumberAsc(ty.getId()).forEach(tm -> {
                 tm.setUpToDate(false);
-                taxMonthService.patch(tm, taxYearMapper.toEntity(ty,businessId));
+                taxMonthService.patch(tm);
             });
         });
     }
     @Override
-    public void patch(TaxYearDTO taxYearDTO, Long businessId){
-        TaxYear taxYear = taxYearMapper.toEntity(taxYearDTO, businessId);
+    public void patch(TaxYear taxYear){
         taxYearRepository.save(taxYear);
     }
 

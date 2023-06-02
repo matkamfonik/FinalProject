@@ -78,7 +78,7 @@ public class CostPositionViewController {
         TaxYear taxYear = taxYearService.get(taxYearId).orElseThrow(EntityNotFoundException::new);                      //todo przenieść do posta w ApiControllerze
         taxMonthService.setNextMonthsNotUpToDate(taxMonthId, taxYear);              //todo przenieść do posta w ApiControllerze
         taxMonthService.update(taxMonthId, businessId);                             //todo przenieść do posta w ApiControllerze
-        taxYearService.update(taxYearId, businessId);                               //todo przenieść do posta w ApiControllerze
+        taxYearService.update(taxYear);                               //todo przenieść do posta w ApiControllerze
 
 
         return "redirect:/view/businesses/" + businessId + "/tax-years/" + taxYearId + "/tax-months/" + taxMonthId;
@@ -95,7 +95,7 @@ public class CostPositionViewController {
         TaxYear taxYear = taxYearService.get(taxYearId).orElseThrow(EntityNotFoundException::new);                      //todo przenieść do posta w ApiControllerze
         taxMonthService.setNextMonthsNotUpToDate(taxMonthId, taxYear);              //todo przenieść do posta w ApiControllerze
         taxMonthService.update(taxMonthId, businessId);                             //todo przenieść do posta w ApiControllerze
-        taxYearService.update(taxYearId, businessId);                               //todo przenieść do posta w ApiControllerze
+        taxYearService.update(taxYear);                               //todo przenieść do posta w ApiControllerze
 
         return "redirect:/view/businesses/" + businessId + "/tax-years/" + taxYearId + "/tax-months/" + taxMonthId;
     }

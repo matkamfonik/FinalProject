@@ -6,6 +6,7 @@ import lombok.Setter;
 import org.springframework.stereotype.Service;
 import pl.coderslab.finalproject.dtos.TaxMonthDTO;
 import pl.coderslab.finalproject.dtos.TaxYearDTO;
+import pl.coderslab.finalproject.entities.TaxMonth;
 import pl.coderslab.finalproject.entities.TaxYear;
 
 import java.math.BigDecimal;
@@ -19,7 +20,7 @@ import java.util.List;
 public class TaxYearCalculationService {
 
 
-    public void calculate(TaxYear taxYear, TaxYearDTO previousTaxYear, List<TaxMonthDTO> months) {
+    public void calculate(TaxYear taxYear, TaxYear previousTaxYear, List<TaxMonth> months) {
 
         taxYear.setBalance(BigDecimal.valueOf(0L, 2));
         taxYear.setVatBalance(previousTaxYear.getVatBalance());

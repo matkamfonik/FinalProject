@@ -1,5 +1,6 @@
 package pl.coderslab.finalproject.controller.viewer;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +15,7 @@ import pl.coderslab.finalproject.dtos.TaxMonthDTO;
 import pl.coderslab.finalproject.entities.*;
 import pl.coderslab.finalproject.mappers.CostPositionMapper;
 import pl.coderslab.finalproject.mappers.RevenuePositionMapper;
+import pl.coderslab.finalproject.mappers.TaxMonthMapper;
 import pl.coderslab.finalproject.services.interfaces.*;
 
 import java.util.List;
@@ -32,13 +34,13 @@ public class TaxMonthViewController {
 
     private final RevenuePositionService revenuePositionService;
 
-    private final BusinessService businessService;
-
     private final TaxYearService taxYearService;
 
     private final CostPositionMapper costPositionMapper;
 
     private final RevenuePositionMapper revenuePositionMapper;
+
+    private final TaxMonthMapper taxMonthMapper;
 
     @GetMapping("/{id}")
     public String show(Model model,
@@ -46,9 +48,9 @@ public class TaxMonthViewController {
                        @PathVariable(name = "taxYearId") Long taxYearId,
                        @PathVariable(name = "businessId") Long businessId) {
 
-        TaxMonthDTO taxMonthDTO = taxMonthService.getDTO(id);
-
-        TaxationForm taxationForm = businessService.get(businessId).get().getTaxationForm();
+        TaxMonth taxMonth = taxMonthService.get(id).orElseThrow(EntityNotFoundException::new);
+        TaxMonthDTO taxMonthDTO = taxMonthMapper.toDto(taxMonth);
+        TaxationForm taxationForm = taxMonth.getTaxYear().getBusiness().getTaxationForm();
         List<CostPosition> costPositions = costPositionService.findCostPositions(id);
         List<CostPositionDTO> positionDTOs = costPositions.stream().map(costPositionMapper::toDto).collect(Collectors.toList());
         List<RevenuePosition> revenuePositions = revenuePositionService.findRevenuePositions(id);
@@ -68,7 +70,7 @@ public class TaxMonthViewController {
     public String add(Model model,
                       @PathVariable(name = "taxYearId") Long taxYearId,
                       @PathVariable(name = "businessId") Long businessId) {
-        Integer previousMonthNumber = taxMonthService.findFirstByTaxYearIdOrderByNumberDesc(taxYearId).getNumber();
+        Integer previousMonthNumber = taxMonthService.findFirstByTaxYearIdOrderByNumberDesc(taxYearId).map(TaxMonth::getNumber).orElse(0);
         TaxMonthDTO taxMonthDTO = new TaxMonthDTO();
         if (previousMonthNumber > 11) {
             return "redirect:/view/businesses/" + businessId + "/tax-years/" + taxYearId;
@@ -84,8 +86,8 @@ public class TaxMonthViewController {
                          @PathVariable(name = "businessId") Long businessId) {
 
         taxMonthService.delete(id);
-
-        taxYearService.update(taxYearId, businessId);
+        TaxYear taxYear = taxYearService.get(taxYearId).orElseThrow(EntityNotFoundException::new);
+        taxYearService.update(taxYear);               // todo wywalić do api controller
 
         return "redirect:/view/businesses/" + businessId + "/tax-years/" + taxYearId;
     }
@@ -101,9 +103,9 @@ public class TaxMonthViewController {
         if (result.hasErrors()) {
             return "tax-months/add-form";
         }
-        TaxYear taxYear = taxYearService.get(taxYearId).get();
-        taxMonthService.add(taxMonthDTO, taxYear);
-
+        TaxYear taxYear = taxYearService.get(taxYearId).orElseThrow(EntityNotFoundException::new);
+        TaxMonth taxMonth = taxMonthMapper.toEntity(taxMonthDTO, taxYear);
+        taxMonthService.add(taxMonth);
 
         return "redirect:/view/businesses/" + businessId + "/tax-years/" + taxYearId;
     }

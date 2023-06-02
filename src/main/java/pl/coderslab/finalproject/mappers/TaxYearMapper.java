@@ -3,21 +3,18 @@ package pl.coderslab.finalproject.mappers;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import pl.coderslab.finalproject.dtos.TaxYearDTO;
+import pl.coderslab.finalproject.entities.Business;
 import pl.coderslab.finalproject.entities.TaxYear;
-import pl.coderslab.finalproject.services.api.BusinessApiService;
-
 
 @Component
 @RequiredArgsConstructor
 public class TaxYearMapper {
 
-    private final BusinessApiService businessService;
-
-    public TaxYear toEntity(TaxYearDTO taxYearDTO, Long businessId) {
+    public TaxYear toEntity(TaxYearDTO taxYearDTO, Business business) {
         TaxYear taxYear = new TaxYear();
         taxYear.setId(taxYearDTO.getId());
         taxYear.setYear(taxYearDTO.getYear());
-        taxYear.setBusiness(businessService.get(businessId).get());
+        taxYear.setBusiness(business);
         taxYear.setBalance(taxYearDTO.getBalance());
         taxYear.setVatBalance(taxYearDTO.getVatBalance());
         taxYear.setUpToDate(taxYearDTO.getUpToDate());

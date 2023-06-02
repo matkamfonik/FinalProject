@@ -1,6 +1,5 @@
 package pl.coderslab.finalproject.services.interfaces;
 
-import pl.coderslab.finalproject.dtos.TaxYearDTO;
 import pl.coderslab.finalproject.entities.TaxYear;
 
 import java.util.List;
@@ -10,19 +9,17 @@ public interface TaxYearService {
 
     List<TaxYear> findAllTaxYears(Long businessId);
 
-    TaxYearDTO findByYearAndBusinessId(int year, Long businessId);
+    Optional<TaxYear> findByYearAndBusinessId(int year, Long businessId);
 
-    List<TaxYearDTO> findByBusinessIdAndYearGreaterThan(Long businessId, int year);
-
-    TaxYearDTO getDTO(Long id);
+    List<TaxYear> findByBusinessIdAndYearGreaterThan(Long businessId, int year);
 
     Optional<TaxYear> get(Long id);
 
-    void save(TaxYearDTO taxYearDTO, Long businessId);
+    void save(TaxYear taxYear);
 
     void delete(Long id);
 
-    void update(Long taxYearId, Long businessId);
+    void update(TaxYear taxYear);
 
-    void patch(TaxYearDTO taxYearDTO, Long businessId);
+    void patch(TaxYear taxYear);
 }
