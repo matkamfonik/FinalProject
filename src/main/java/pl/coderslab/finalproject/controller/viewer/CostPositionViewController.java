@@ -9,9 +9,11 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import pl.coderslab.finalproject.dtos.CostPositionDTO;
+import pl.coderslab.finalproject.entities.CostPosition;
 import pl.coderslab.finalproject.entities.CostType;
 import pl.coderslab.finalproject.entities.TaxMonth;
 import pl.coderslab.finalproject.entities.TaxYear;
+import pl.coderslab.finalproject.mappers.CostPositionMapper;
 import pl.coderslab.finalproject.services.calculation.CostCalculationService;
 import pl.coderslab.finalproject.services.interfaces.*;
 
@@ -35,6 +37,8 @@ public class CostPositionViewController {
 
     private final TaxYearService taxYearService;
 
+    private final CostPositionMapper costPositionMapper;
+
     @GetMapping("")
     public String add(Model model) {
         List<CostType> costTypes = costTypeService.getList();
@@ -46,7 +50,9 @@ public class CostPositionViewController {
     public String add(Model model,
                       @PathVariable(name = "id") Long id) {
         List<CostType> costTypes = costTypeService.getList();
-        model.addAttribute("costPosition", costPositionService.getDTO(id));
+        CostPosition costPosition = costPositionService.get(id).get();
+        CostPositionDTO costPositionDTO = costPositionMapper.toDto(costPosition);
+        model.addAttribute("costPosition", costPositionDTO);
         model.addAttribute("costTypes", costTypes);
         return "cost-positions/add-form";
     }
@@ -64,7 +70,9 @@ public class CostPositionViewController {
             return "cost-positions/add-form";
         }
         TaxMonth taxMonth = taxMonthService.get(taxMonthId).get();
-        costPositionService.add(costPositionDTO, taxMonth, businessId, taxYearId);
+        CostType costType = costTypeService.get(costPositionDTO.getCostTypeId()).get();
+        CostPosition costPosition = costPositionMapper.toEntity(costPositionDTO, taxMonth, costType);
+        costPositionService.add(costPosition);
 
         TaxYear taxYear = taxYearService.get(taxYearId).get();                      //todo przenieść do posta w ApiControllerze
         taxMonthService.setNextMonthsNotUpToDate(taxMonthId, taxYear);              //todo przenieść do posta w ApiControllerze

@@ -12,9 +12,11 @@ import pl.coderslab.finalproject.dtos.CostPositionDTO;
 import pl.coderslab.finalproject.dtos.RevenuePositionDTO;
 import pl.coderslab.finalproject.dtos.TaxMonthDTO;
 import pl.coderslab.finalproject.entities.*;
+import pl.coderslab.finalproject.mappers.CostPositionMapper;
 import pl.coderslab.finalproject.services.interfaces.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -33,6 +35,8 @@ public class TaxMonthViewController {
 
     private final TaxYearService taxYearService;
 
+    private final CostPositionMapper costPositionMapper;
+
     @GetMapping("/{id}")
     public String show(Model model,
                        @PathVariable(name = "id") Long id,
@@ -42,12 +46,12 @@ public class TaxMonthViewController {
         TaxMonthDTO taxMonthDTO = taxMonthService.getDTO(id);
 
         TaxationForm taxationForm = businessService.get(businessId).get().getTaxationForm();
-
-        List<CostPositionDTO> costPositions = costPositionService.findAllCostPositions(id);
+        List<CostPosition> costPositions = costPositionService.findCostPositions(id);
+        List<CostPositionDTO> positionDTOs = costPositions.stream().map(costPositionMapper::toDto).collect(Collectors.toList());
         List<RevenuePositionDTO> revenuePositions = revenuePositionService.findAllRevenuePositions(id);
 
         model.addAttribute("taxMonth", taxMonthDTO);
-        model.addAttribute("costPositions", costPositions);
+        model.addAttribute("costPositions", positionDTOs);
         model.addAttribute("revenuePositions", revenuePositions);
         model.addAttribute("taxYearId", taxYearId);
         model.addAttribute("businessId", businessId);

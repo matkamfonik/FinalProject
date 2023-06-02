@@ -44,7 +44,8 @@ public class CostCalculationService {
         }
     }
 
-    public void calculate(CostPosition costPosition, TaxationForm taxationForm) {
+    public void calculate(CostPosition costPosition) {
+        TaxationForm taxationForm = costPosition.getTaxMonth().getTaxYear().getBusiness().getTaxationForm();
         costPosition.setVat(costPosition.getNetto().multiply(costPosition.getVatRate().divide(BigDecimal.valueOf(100L), new MathContext(5)), new MathContext(5)));
         costPosition.setBrutto(costPosition.getNetto().add(costPosition.getVat(), new MathContext(5)));
         CostType costType = costPosition.getCostType();

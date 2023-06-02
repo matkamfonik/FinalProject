@@ -1,17 +1,17 @@
 package pl.coderslab.finalproject.services.interfaces;
 
-import pl.coderslab.finalproject.dtos.CostPositionDTO;
-import pl.coderslab.finalproject.entities.TaxMonth;
+import pl.coderslab.finalproject.entities.CostPosition;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface CostPositionService {
 
-    CostPositionDTO getDTO(Long id);
+    Optional<CostPosition> get(Long id);
 
     void delete(Long id);
 
-    void add(CostPositionDTO costPositionDTO, TaxMonth taxMonth, Long businessId, Long taxYearId);
+    void add(CostPosition costPosition);
 
-    List<CostPositionDTO> findAllCostPositions(Long taxMonthId);
+    List<CostPosition> findCostPositions(Long taxMonthId);
 }

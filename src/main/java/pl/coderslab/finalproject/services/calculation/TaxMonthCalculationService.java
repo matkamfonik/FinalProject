@@ -26,13 +26,13 @@ public class TaxMonthCalculationService {
         taxMonth.setRevenue(BigDecimal.valueOf(0L, 2));
         taxMonth.setVatValue(BigDecimal.valueOf(0L, 2));
         taxMonth.setSocialInsurance(BigDecimal.valueOf(0L, 2));
-        costPositionService.findAllCostPositions(taxMonth.getId())
+        costPositionService.findCostPositions(taxMonth.getId())
                 .stream()
                 .peek(cp -> {
                     taxMonth.setCosts(taxMonth.getCosts().add(cp.getCostIncluded(), new MathContext(5)));
                     taxMonth.setVatValue(taxMonth.getVatValue().subtract(cp.getVatDeducted(), new MathContext(5)));
                 })
-                .filter(cp -> cp.getCostTypeId() == 1L || cp.getCostTypeId() == 2L)
+                .filter(cp -> cp.getCostType().getId() == 1L || cp.getCostType().getId() == 2L)
                 .forEach(cp -> taxMonth.setSocialInsurance(taxMonth.getSocialInsurance().add(cp.getNetto(), new MathContext(5))));
         revenuePositionService.findAllRevenuePositions(taxMonth.getId())
                 .forEach(rp -> {

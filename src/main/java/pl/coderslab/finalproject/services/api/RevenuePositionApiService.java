@@ -36,7 +36,6 @@ public class RevenuePositionApiService implements RevenuePositionService {
 
     @Override
     public void add(RevenuePositionDTO revenuePositionDTO, TaxMonth taxMonth) {
-        log.info(revenuePositionDTO.toString());
         RevenuePosition revenuePosition = revenuePositionMapper.toEntity(revenuePositionDTO, taxMonth);
         revenueCalculationService.calculate(revenuePosition);
         revenuePositionRepository.save(revenuePosition);
