@@ -2,7 +2,6 @@ package pl.coderslab.finalproject.controller.viewer;
 
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
-import jakarta.websocket.server.PathParam;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -14,6 +13,7 @@ import pl.coderslab.finalproject.CurrentUser;
 import pl.coderslab.finalproject.dtos.ClientDTO;
 import pl.coderslab.finalproject.httpClients.BlockFirmy;
 import pl.coderslab.finalproject.httpClients.ClientClient;
+import pl.coderslab.finalproject.httpClients.NipRegon;
 import pl.coderslab.finalproject.services.interfaces.ClientService;
 
 import java.util.List;
@@ -45,6 +45,7 @@ public class ClientViewController {
     @GetMapping("")
     public String add(Model model) {
         model.addAttribute("client", new ClientDTO());
+        model.addAttribute("nipRegon", new NipRegon());
         return "clients/add-form";
     }
 
@@ -60,9 +61,16 @@ public class ClientViewController {
     }
 
     @GetMapping("/nip")
-    public String getByNip(Model model, @PathParam("nip") String nip) {
-        BlockFirmy blockFirmy = clientClient.getByNip(nip).block();
+    public String getByNip(Model model,
+                           @ModelAttribute(name = "nipRegon") @Valid NipRegon nipRegon,
+                           BindingResult result) {
+        if (result.hasErrors()) {
+            model.addAttribute("client", new ClientDTO());
+            return "clients/add-form";
+        }
+        BlockFirmy blockFirmy = clientClient.getByNip(nipRegon.getNipNumber()).block();
         if (blockFirmy == null) {
+            model.addAttribute("client", new ClientDTO());
             return "clients/add-form";
         }
         ClientDTO clientDTO = clientService.extractClientDTO(blockFirmy);
@@ -71,9 +79,16 @@ public class ClientViewController {
     }
 
     @GetMapping("/regon")
-    public String getByRegon(Model model, @PathParam("regon") String regon) {
-        BlockFirmy blockFirmy = clientClient.getByRegon(regon).block();
+    public String getByRegon(Model model,
+                             @ModelAttribute(name = "nipRegon") @Valid NipRegon nipRegon,
+                             BindingResult result) {
+        if (result.hasErrors()) {
+            model.addAttribute("client", new ClientDTO());
+            return "clients/add-form";
+        }
+        BlockFirmy blockFirmy = clientClient.getByRegon(nipRegon.getRegonNumber()).block();
         if (blockFirmy == null) {
+            model.addAttribute("client", new ClientDTO());
             return "clients/add-form";
         }
         ClientDTO clientDTO = clientService.extractClientDTO(blockFirmy);

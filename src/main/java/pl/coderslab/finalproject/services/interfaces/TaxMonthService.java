@@ -33,4 +33,6 @@ public interface TaxMonthService {
     List<TaxMonth> findNextMonths (Long yearId, Integer taxMonthNumber, Integer taxYearYear);
 
     void setNextMonthsNotUpToDate(Long taxMonthId, TaxYear taxYear); //todo wyrzucić stąd po zrobieniu TaxMonthApiControllera
+
+    Optional<TaxMonth> findByTaxYearIdAndNumber(Long taxYearId, Integer monthNumber);
 }

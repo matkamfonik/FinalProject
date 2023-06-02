@@ -44,7 +44,6 @@
     <c:forEach items="${taxMonths}" var="taxMonth">
         <tr>
             <td>${taxMonth.number}</td>
-                <%-- todo zmienić na wyświtlanie nazw miesięcy --%>
             <td>${taxMonth.income}</td>
             <td>${taxMonth.socialInsurance}</td>
             <td>

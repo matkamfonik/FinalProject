@@ -48,14 +48,15 @@
 
 
 </form:form><br>
-<form:form action="/view/clients/nip" method="get">
-    <input type="text" name="nip">
+<form:form action="/view/clients/nip" method="get" modelAttribute="nipRegon">
+    <form:input path="nipNumber"/>
     <input type="submit" value="Znajdź przez nr NIP">
+    <form:errors path="nipNumber" cssClass="error"/>
 </form:form>
-<%--todo walidator--%>
-<form:form action="/view/clients/regon" method="get">
-    <input type="text" name="regon">
+<form:form action="/view/clients/regon" method="get" modelAttribute="nipRegon">
+    <form:input path="regonNumber"/>
     <input type="submit" value="Znajdź przez nr REGON">
+    <form:errors path="regonNumber" cssClass="error"/>
 </form:form>
 </body>
 </html>

@@ -62,10 +62,12 @@ public class TaxYearViewController {
         return "redirect:/view/businesses/" + businessId;
     }
 
-    @PostMapping("")                            // todo walidacje zeby nie dodać takiego samego
-    public String add(@Valid TaxYearDTO taxYearDTO,
+    @PostMapping("")
+    public String add(@ModelAttribute(name = "taxYear") @Valid TaxYearDTO taxYearDTO,
                       BindingResult result,
                       @PathVariable(name = "businessId") Long businessId) {
+        if (taxYearService.findByYearAndBusinessId(taxYearDTO.getYear(), businessId).getId() != null)
+            result.rejectValue("year", "error.taxYear", "Rok już istnieje");
         if (result.hasErrors()) {
             return "tax-years/add-form";
         }
@@ -73,9 +75,10 @@ public class TaxYearViewController {
 
         return "redirect:/view/businesses/" + businessId;
     }
+
     @GetMapping("/{id}/patch")          // we viewerze musi tak zostać, w api controllerze ustawie na metodę patch
     public String patch(@PathVariable(name = "id") Long taxYearId,
-                        @PathVariable(name = "businessId") Long businessId){
+                        @PathVariable(name = "businessId") Long businessId) {
         taxYearService.update(taxYearId, businessId);
         return "redirect:/view/businesses/" + businessId;
     }
