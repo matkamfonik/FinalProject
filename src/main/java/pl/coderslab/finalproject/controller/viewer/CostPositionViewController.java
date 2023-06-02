@@ -1,5 +1,6 @@
 package pl.coderslab.finalproject.controller.viewer;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -50,7 +51,7 @@ public class CostPositionViewController {
     public String add(Model model,
                       @PathVariable(name = "id") Long id) {
         List<CostType> costTypes = costTypeService.getList();
-        CostPosition costPosition = costPositionService.get(id).get();
+        CostPosition costPosition = costPositionService.get(id).orElseThrow(EntityNotFoundException::new);
         CostPositionDTO costPositionDTO = costPositionMapper.toDto(costPosition);
         model.addAttribute("costPosition", costPositionDTO);
         model.addAttribute("costTypes", costTypes);
@@ -69,12 +70,12 @@ public class CostPositionViewController {
             model.addAttribute("costTypes", costTypes);
             return "cost-positions/add-form";
         }
-        TaxMonth taxMonth = taxMonthService.get(taxMonthId).get();
-        CostType costType = costTypeService.get(costPositionDTO.getCostTypeId()).get();
+        TaxMonth taxMonth = taxMonthService.get(taxMonthId).orElseThrow(EntityNotFoundException::new);
+        CostType costType = costTypeService.get(costPositionDTO.getCostTypeId()).orElseThrow(EntityNotFoundException::new);
         CostPosition costPosition = costPositionMapper.toEntity(costPositionDTO, taxMonth, costType);
         costPositionService.add(costPosition);
 
-        TaxYear taxYear = taxYearService.get(taxYearId).get();                      //todo przenieść do posta w ApiControllerze
+        TaxYear taxYear = taxYearService.get(taxYearId).orElseThrow(EntityNotFoundException::new);                      //todo przenieść do posta w ApiControllerze
         taxMonthService.setNextMonthsNotUpToDate(taxMonthId, taxYear);              //todo przenieść do posta w ApiControllerze
         taxMonthService.update(taxMonthId, businessId);                             //todo przenieść do posta w ApiControllerze
         taxYearService.update(taxYearId, businessId);                               //todo przenieść do posta w ApiControllerze
@@ -91,7 +92,7 @@ public class CostPositionViewController {
 
         costPositionService.delete(id);
 
-        TaxYear taxYear = taxYearService.get(taxYearId).get();                      //todo przenieść do posta w ApiControllerze
+        TaxYear taxYear = taxYearService.get(taxYearId).orElseThrow(EntityNotFoundException::new);                      //todo przenieść do posta w ApiControllerze
         taxMonthService.setNextMonthsNotUpToDate(taxMonthId, taxYear);              //todo przenieść do posta w ApiControllerze
         taxMonthService.update(taxMonthId, businessId);                             //todo przenieść do posta w ApiControllerze
         taxYearService.update(taxYearId, businessId);                               //todo przenieść do posta w ApiControllerze
@@ -108,7 +109,7 @@ public class CostPositionViewController {
                                            @PathVariable(name = "businessId") Long businessId,
                                            @PathVariable(name = "taxYearId") Long taxYearId) {
         TaxMonth previousTaxMonth = taxMonthService.findPrevious(taxMonthId).orElse(new TaxMonth());
-        int taxYearYear = taxYearService.get(taxYearId).get().getYear();
+        int taxYearYear = taxYearService.get(taxYearId).orElseThrow(EntityNotFoundException::new).getYear();
         costCalculationService.calculateHealthInsurance(costPositionDTO, businessId, taxYearYear, previousTaxMonth);
         List<CostType> costTypes = costTypeService.getList();
         model.addAttribute("costPosition", costPositionDTO);

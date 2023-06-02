@@ -1,5 +1,6 @@
 package pl.coderslab.finalproject.controller.viewer;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -42,7 +43,7 @@ public class BusinessViewController {
 
     @GetMapping("/{id}")
     public String show(Model model, @PathVariable(name = "id") Long id){
-        Business business = businessService.get(id).get();
+        Business business = businessService.get(id).orElseThrow(EntityNotFoundException::new);
         BusinessDTO businessDTO = businessMapper.toDto(business);
         List<TaxYear> taxYears = taxYearService.findAllTaxYears(id);
         List<TaxYearDTO> taxYearDTOs = taxYears.stream().map(taxYearMapper::toDto).collect(Collectors.toList());
@@ -70,7 +71,7 @@ public class BusinessViewController {
             model.addAttribute("taxationForms", taxationForms);
             return "businesses/add-form";
         }
-        TaxationForm taxationForm = taxationFormService.get(businessDTO.getTaxationFormId()).get();
+        TaxationForm taxationForm = taxationFormService.get(businessDTO.getTaxationFormId()).orElseThrow(EntityNotFoundException::new);
         Business business = businessMapper.toEntity(businessDTO, currentUser.getUser(), taxationForm);
         businessService.add(business);
         return "redirect:/view";

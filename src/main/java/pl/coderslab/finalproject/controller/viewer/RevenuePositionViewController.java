@@ -1,5 +1,6 @@
 package pl.coderslab.finalproject.controller.viewer;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -9,8 +10,10 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import pl.coderslab.finalproject.dtos.RevenuePositionDTO;
+import pl.coderslab.finalproject.entities.RevenuePosition;
 import pl.coderslab.finalproject.entities.TaxMonth;
 import pl.coderslab.finalproject.entities.TaxYear;
+import pl.coderslab.finalproject.mappers.RevenuePositionMapper;
 import pl.coderslab.finalproject.services.interfaces.*;
 
 
@@ -27,6 +30,8 @@ public class RevenuePositionViewController {
 
     private final TaxYearService taxYearService;
 
+    private final RevenuePositionMapper revenuePositionMapper;
+
     @GetMapping("")
     public String add(Model model) {
         model.addAttribute("revenuePosition", new RevenuePositionDTO());
@@ -36,7 +41,9 @@ public class RevenuePositionViewController {
     @GetMapping("/{id}")
     public String edit(Model model,
                        @PathVariable(name = "id") Long id) {
-        model.addAttribute("revenuePosition", revenuePositionService.getDTO(id));
+        RevenuePosition revenuePosition = revenuePositionService.get(id).orElseThrow(EntityNotFoundException::new);
+        RevenuePositionDTO revenuePositionDTO = revenuePositionMapper.toDto(revenuePosition);
+        model.addAttribute("revenuePosition", revenuePositionDTO);
         return "revenue-positions/add-form";
     }
 
@@ -48,8 +55,8 @@ public class RevenuePositionViewController {
 
         revenuePositionService.delete(id);
 
-        TaxYear taxYear = taxYearService.get(taxYearId).get();
-        taxMonthService.setNextMonthsNotUpToDate(taxMonthId, taxYear);
+        TaxYear taxYear = taxYearService.get(taxYearId).orElseThrow(EntityNotFoundException::new);
+        taxMonthService.setNextMonthsNotUpToDate(taxMonthId, taxYear);                                              //todo przenieść do api controller
         taxMonthService.update(taxMonthId, businessId);
         taxYearService.update(taxYearId, businessId);
 
@@ -65,12 +72,14 @@ public class RevenuePositionViewController {
         if (result.hasErrors()) {
             return "cost-positions/add-form";
         }
-        TaxMonth taxMonth = taxMonthService.get(taxMonthId).get();
-        revenuePositionService.add(revenuePositionDTO, taxMonth);
-        TaxYear taxYear = taxYearService.get(taxYearId).get();                      //todo przenieść do posta w ApiControllerze
-        taxMonthService.setNextMonthsNotUpToDate(taxMonthId, taxYear);              //todo przenieść do posta w ApiControllerze
-        taxMonthService.update(taxMonthId, businessId);                             //todo przenieść do posta w ApiControllerze
-        taxYearService.update(taxYearId, businessId);                               //todo przenieść do posta w ApiControllerze
+        TaxMonth taxMonth = taxMonthService.get(taxMonthId).orElseThrow(EntityNotFoundException::new);
+        RevenuePosition revenuePosition = revenuePositionMapper.toEntity(revenuePositionDTO, taxMonth);
+        revenuePositionService.add(revenuePosition);
+
+        TaxYear taxYear = taxYearService.get(taxYearId).orElseThrow(EntityNotFoundException::new);                      //todo przenieść do posta w ApiControllerze
+        taxMonthService.setNextMonthsNotUpToDate(taxMonthId, taxYear);                                                   //
+        taxMonthService.update(taxMonthId, businessId);                                                                   //
+        taxYearService.update(taxYearId, businessId);                                                                     //
 
         return "redirect:/view/businesses/" + businessId + "/tax-years/" + taxYearId + "/tax-months/" + taxMonthId;
     }

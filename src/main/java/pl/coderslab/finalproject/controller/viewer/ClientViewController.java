@@ -1,5 +1,6 @@
 package pl.coderslab.finalproject.controller.viewer;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -35,7 +36,7 @@ public class ClientViewController {
 
     @GetMapping("/{id}")
     public String show(Model model, @PathVariable(name = "id") Long id) {
-        Client client = clientService.get(id).get();
+        Client client = clientService.get(id).orElseThrow(EntityNotFoundException::new);
         ClientDTO clientDTO = clientMapper.toDto(client);
         model.addAttribute("client", clientDTO);
         return "clients/details";

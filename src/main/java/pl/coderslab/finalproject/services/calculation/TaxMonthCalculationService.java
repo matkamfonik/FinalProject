@@ -34,7 +34,7 @@ public class TaxMonthCalculationService {
                 })
                 .filter(cp -> cp.getCostType().getId() == 1L || cp.getCostType().getId() == 2L)
                 .forEach(cp -> taxMonth.setSocialInsurance(taxMonth.getSocialInsurance().add(cp.getNetto(), new MathContext(5))));
-        revenuePositionService.findAllRevenuePositions(taxMonth.getId())
+        revenuePositionService.findRevenuePositions(taxMonth.getId())
                 .forEach(rp -> {
                     taxMonth.setRevenue(taxMonth.getRevenue().add(rp.getNetto(), new MathContext(5)));
                     taxMonth.setVatValue(taxMonth.getVatValue().add(rp.getVat(), new MathContext(5)));
