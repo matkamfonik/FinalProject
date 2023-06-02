@@ -9,10 +9,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import pl.coderslab.finalproject.CurrentUser;
 import pl.coderslab.finalproject.dtos.BusinessDTO;
+import pl.coderslab.finalproject.entities.Business;
 import pl.coderslab.finalproject.entities.User;
+import pl.coderslab.finalproject.mappers.BusinessMapper;
 import pl.coderslab.finalproject.services.interfaces.BusinessService;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/view")
@@ -21,13 +24,16 @@ import java.util.List;
 public class HomeController {
     private final BusinessService businessService;
 
+    private final BusinessMapper businessMapper;
+
     @GetMapping("")
     public String home(Model model, @AuthenticationPrincipal CurrentUser currentUser) {
         User user = currentUser.getUser();
         model.addAttribute("user", user);
 
-        List<BusinessDTO> businesses = businessService.findAllBusinesses(currentUser);
-        model.addAttribute("businesses", businesses);
+        List<Business> businesses = businessService.findAllBusinesses(currentUser);
+        List<BusinessDTO> businessDTOs = businesses.stream().map(businessMapper::toDto).collect(Collectors.toList());
+        model.addAttribute("businesses", businessDTOs);
         return "home";
     }
 

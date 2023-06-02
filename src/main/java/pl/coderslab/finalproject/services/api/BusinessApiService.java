@@ -23,19 +23,10 @@ import java.util.stream.Collectors;
 public class BusinessApiService implements BusinessService {
     private final BusinessRepository businessRepository;
 
-    private final BusinessMapper businessMapper;
-
-    private final TaxationFormApiService taxationFormService;
-
     @Override
-    public List<BusinessDTO> findAllBusinesses(CurrentUser currentUser) {
+    public List<Business> findAllBusinesses(CurrentUser currentUser) {
         Long userId = currentUser.getUser().getId();
-        return businessRepository.findAllBusinessNameByUserId(userId).stream().map(businessMapper::toDto).collect(Collectors.toList());
-    }
-
-    @Override
-    public BusinessDTO getDTO(Long id) {
-        return businessRepository.findById(id).map(businessMapper::toDto) .orElseThrow(EntityNotFoundException::new);
+        return businessRepository.findAllBusinessNameByUserId(userId);
     }
 
     @Override

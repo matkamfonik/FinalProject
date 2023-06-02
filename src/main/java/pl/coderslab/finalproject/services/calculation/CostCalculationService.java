@@ -30,7 +30,7 @@ public class CostCalculationService {
         costPositionDTO.setCostTypeId(1L);
         costPositionDTO.setVatRate(BigDecimal.valueOf(0L, 2));
         BigDecimal healthInsurance = BigDecimal.valueOf(0L, 2);
-        Long taxationFormId = businessService.getDTO(businessId).getTaxationFormId();
+        Long taxationFormId = businessService.get(businessId).get().getTaxationForm().getId();
         TaxationForm taxationForm = taxationFormService.get(taxationFormId).get();
         BigDecimal healthCareContributionRate = taxationForm.getHealthCareContributionRate();
         BigDecimal previousMonthIncome = previousTaxMonth.getIncome();

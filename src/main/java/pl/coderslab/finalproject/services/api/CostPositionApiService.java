@@ -50,7 +50,7 @@ public class CostPositionApiService implements CostPositionService {
     public void add(CostPositionDTO costPositionDTO, TaxMonth taxMonth, Long businessId, Long taxYearId) {
         CostType costType = costTypeService.get(costPositionDTO.getCostTypeId()).get();
         CostPosition costPosition = costPositionMapper.toEntity(costPositionDTO, taxMonth, costType);
-        Long taxationFormId = businessService.getDTO(businessId).getTaxationFormId();
+        Long taxationFormId = businessService.get(businessId).get().getTaxationForm().getId();
         TaxationForm taxationForm = taxationFormService.get(taxationFormId).get();
         costCalculationService.calculate(costPosition, taxationForm);
         costPositionRepository.save(costPosition);
