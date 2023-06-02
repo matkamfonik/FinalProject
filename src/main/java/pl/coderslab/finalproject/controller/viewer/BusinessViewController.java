@@ -12,12 +12,17 @@ import org.springframework.web.bind.annotation.*;
 import pl.coderslab.finalproject.CurrentUser;
 import pl.coderslab.finalproject.dtos.BusinessDTO;
 import pl.coderslab.finalproject.dtos.TaxYearDTO;
+import pl.coderslab.finalproject.entities.Business;
+import pl.coderslab.finalproject.entities.TaxYear;
 import pl.coderslab.finalproject.entities.TaxationForm;
+import pl.coderslab.finalproject.mappers.BusinessMapper;
+import pl.coderslab.finalproject.mappers.TaxYearMapper;
 import pl.coderslab.finalproject.services.interfaces.BusinessService;
 import pl.coderslab.finalproject.services.interfaces.TaxYearService;
 import pl.coderslab.finalproject.services.interfaces.TaxationFormService;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -31,12 +36,18 @@ public class BusinessViewController {
 
     private final TaxYearService taxYearService;
 
+    private final BusinessMapper businessMapper;
+
+    private final TaxYearMapper taxYearMapper;
+
     @GetMapping("/{id}")
     public String show(Model model, @PathVariable(name = "id") Long id){
-        BusinessDTO businessDTO = businessService.getDTO(id);
-        List<TaxYearDTO> taxYears = taxYearService.findAllTaxYears(id);
+        Business business = businessService.get(id).get();
+        BusinessDTO businessDTO = businessMapper.toDto(business);
+        List<TaxYear> taxYears = taxYearService.findAllTaxYears(id);
+        List<TaxYearDTO> taxYearDTOs = taxYears.stream().map(taxYearMapper::toDto).collect(Collectors.toList());
         model.addAttribute("business", businessDTO);
-        model.addAttribute("taxYears", taxYears);
+        model.addAttribute("taxYears", taxYearDTOs);
         return "businesses/details";
     }
 
@@ -46,12 +57,6 @@ public class BusinessViewController {
         model.addAttribute("business", new BusinessDTO());
         model.addAttribute("taxationForms", taxationForms);
         return "businesses/add-form";
-    }
-
-    @GetMapping("/{id}/delete")
-    public String delete(@PathVariable(name = "id") Long id){
-        businessService.delete(id);
-        return "redirect:/view";
     }
 
     @PostMapping("")
@@ -65,8 +70,15 @@ public class BusinessViewController {
             model.addAttribute("taxationForms", taxationForms);
             return "businesses/add-form";
         }
+        TaxationForm taxationForm = taxationFormService.get(businessDTO.getTaxationFormId()).get();
+        Business business = businessMapper.toEntity(businessDTO, currentUser.getUser(), taxationForm);
+        businessService.add(business);
+        return "redirect:/view";
+    }
 
-        businessService.add(businessDTO, currentUser);
+    @GetMapping("/{id}/delete")
+    public String delete(@PathVariable(name = "id") Long id){
+        businessService.delete(id);
         return "redirect:/view";
     }
 }

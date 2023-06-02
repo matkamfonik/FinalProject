@@ -15,7 +15,7 @@ public interface BusinessService {
 
     Optional<Business> get(Long id);
 
-    void add(BusinessDTO businessDTO, CurrentUser currentUser);
+    void add(Business business);
 
     void delete(Long id);
 

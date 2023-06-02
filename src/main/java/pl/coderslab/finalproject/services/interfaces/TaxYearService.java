@@ -8,7 +8,7 @@ import java.util.Optional;
 
 public interface TaxYearService {
 
-    List<TaxYearDTO> findAllTaxYears(Long businessId);
+    List<TaxYear> findAllTaxYears(Long businessId);
 
     TaxYearDTO findByYearAndBusinessId(int year, Long businessId);
 

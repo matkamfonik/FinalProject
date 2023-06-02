@@ -30,8 +30,8 @@ public class TaxYearApiService implements TaxYearService {
     private final TaxMonthApiService taxMonthService;
 
     @Override
-    public List<TaxYearDTO> findAllTaxYears(Long businessId) {
-        return taxYearRepository.findAllTaxYearNameByBusinessIdOrderByYearAsc(businessId).stream().map(taxYearMapper::toDto).collect(Collectors.toList());
+    public List<TaxYear> findAllTaxYears(Long businessId) {
+        return taxYearRepository.findAllTaxYearNameByBusinessIdOrderByYearAsc(businessId);
     }
 
     @Override

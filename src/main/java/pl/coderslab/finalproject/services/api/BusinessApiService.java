@@ -44,10 +44,7 @@ public class BusinessApiService implements BusinessService {
     }
 
     @Override
-    public void add(BusinessDTO businessDTO, CurrentUser currentUser) {
-        Business business = businessMapper.toEntity(businessDTO,
-                currentUser.getUser(),
-                taxationFormService.get(businessDTO.getTaxationFormId()).get());
+    public void add(Business business) {
         businessRepository.save(business);
     }
 
