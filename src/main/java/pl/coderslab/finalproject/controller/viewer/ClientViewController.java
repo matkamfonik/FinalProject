@@ -11,12 +11,15 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import pl.coderslab.finalproject.CurrentUser;
 import pl.coderslab.finalproject.dtos.ClientDTO;
+import pl.coderslab.finalproject.entities.Client;
 import pl.coderslab.finalproject.httpClients.BlockFirmy;
 import pl.coderslab.finalproject.httpClients.ClientClient;
 import pl.coderslab.finalproject.httpClients.NipRegon;
+import pl.coderslab.finalproject.mappers.ClientMapper;
 import pl.coderslab.finalproject.services.interfaces.ClientService;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -28,17 +31,21 @@ public class ClientViewController {
 
     private final ClientClient clientClient;
 
+    private final ClientMapper clientMapper;
+
     @GetMapping("/{id}")
     public String show(Model model, @PathVariable(name = "id") Long id) {
-        ClientDTO clientDTO = clientService.getDTO(id);
+        Client client = clientService.get(id).get();
+        ClientDTO clientDTO = clientMapper.toDto(client);
         model.addAttribute("client", clientDTO);
         return "clients/details";
     }
 
     @GetMapping("/all")
     public String list(Model model, @AuthenticationPrincipal CurrentUser currentUser) {
-        List<ClientDTO> clients = clientService.findAllClients(currentUser);
-        model.addAttribute("clients", clients);
+        List<Client> clients = clientService.findClients(currentUser.getUser());
+        List<ClientDTO> clientDTOs = clients.stream().map(clientMapper::toDto).collect(Collectors.toList());
+        model.addAttribute("clients", clientDTOs);
         return "clients/all";
     }
 
@@ -49,6 +56,12 @@ public class ClientViewController {
         return "clients/add-form";
     }
 
+    @GetMapping("/{id}/delete")
+    public String delete(@PathVariable(name = "id") Long id){
+        clientService.delete(id);
+        return "redirect:/view/clients/all";
+    }
+
     @PostMapping("")
     public String add(@ModelAttribute(name = "client") @Valid ClientDTO clientDTO,
                       BindingResult result,
@@ -56,8 +69,10 @@ public class ClientViewController {
         if (result.hasErrors()) {
             return "clients/add-form";
         }
-        clientService.add(clientDTO, currentUser);
-        return "redirect:/view";
+        Client client = clientMapper.toEntity(clientDTO,
+                currentUser.getUser());
+        clientService.add(client);
+        return "redirect:/view/clients/all";
     }
 
     @GetMapping("/nip")

@@ -9,26 +9,12 @@
 <body>
 <table>
     <thead>
-    <tr>
-        <td>Nazwa</td>
-        <td>Adres</td>
-        <td>NIP</td>
-        <td>REGON</td>
-    </tr>
+        <td>Klient</td>
     </thead>
     <tbody>
     <c:forEach var="client" items="${clients}">
         <tr>
-            <td>${client.name}</td>
-            <td>${client.street}
-                ${client.number}
-                <c:if test="${not empty client.apartmentNumber}">
-                    /${client.apartmentNumber}
-                </c:if>
-                , ${client.postalCode} ${client.city}
-            </td>
-            <td>${client.nip}</td>
-            <td>${client.regon}</td>
+            <td><a href="/view/clients/${client.id}">${client.name}</a></td>
         </tr>
     </c:forEach>
     <tr>

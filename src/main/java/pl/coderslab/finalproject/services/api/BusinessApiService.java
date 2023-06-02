@@ -1,20 +1,16 @@
 package pl.coderslab.finalproject.services.api;
 
-import jakarta.persistence.EntityNotFoundException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.stereotype.Service;
 import pl.coderslab.finalproject.CurrentUser;
-import pl.coderslab.finalproject.dtos.BusinessDTO;
 import pl.coderslab.finalproject.entities.Business;
-import pl.coderslab.finalproject.mappers.BusinessMapper;
 import pl.coderslab.finalproject.repository.BusinessRepository;
 import pl.coderslab.finalproject.services.interfaces.BusinessService;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor

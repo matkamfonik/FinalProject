@@ -1,21 +1,19 @@
 package pl.coderslab.finalproject.services.api;
 
-import jakarta.persistence.EntityNotFoundException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.stereotype.Service;
-import pl.coderslab.finalproject.CurrentUser;
 import pl.coderslab.finalproject.dtos.ClientDTO;
 import pl.coderslab.finalproject.entities.Client;
+import pl.coderslab.finalproject.entities.User;
 import pl.coderslab.finalproject.httpClients.BlockFirmy;
 import pl.coderslab.finalproject.httpClients.Firma;
-import pl.coderslab.finalproject.mappers.ClientMapper;
 import pl.coderslab.finalproject.repository.ClientRepository;
 import pl.coderslab.finalproject.services.interfaces.ClientService;
 
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -24,25 +22,25 @@ import java.util.stream.Collectors;
 public class ClientApiService implements ClientService {
     private final ClientRepository clientRepository;
 
-    private final ClientMapper clientMapper;
-
     @Override
-    public List<ClientDTO> findAllClients(CurrentUser currentUser) {
-        Long userId = currentUser.getUser().getId();
-        return clientRepository.findAllClientNameByUserId(userId).stream().map(clientMapper::toDto).collect(Collectors.toList());
+    public List<Client> findClients(User user) {
+        Long userId = user.getId();
+        return clientRepository.findAllClientNameByUserId(userId);
     }
 
     @Override
-    public ClientDTO getDTO(Long id) {
-        Client client = clientRepository.findById(id).orElseThrow(EntityNotFoundException::new);
-        return clientMapper.toDto(client);
+    public Optional<Client> get(Long id) {
+        return clientRepository.findById(id);
     }
 
     @Override
-    public void add(ClientDTO clientDTO, CurrentUser currentUser) {
-        Client client = clientMapper.toEntity(clientDTO,
-                currentUser.getUser());
+    public void add(Client client) {
         clientRepository.save(client);
+    }
+
+    @Override
+    public void delete(Long clientId) {
+        clientRepository.deleteById(clientId);
     }
 
     public ClientDTO extractClientDTO(BlockFirmy blockFirmy) {
